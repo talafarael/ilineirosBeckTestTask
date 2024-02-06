@@ -1,20 +1,24 @@
 require('dotenv').config()
 const nodemailer=require('nodemailer')
- 
+interface SendMessageParams {
+    emailUser: string;
+    num: string;
+}
 class Emailsend {
     constructor() {
         this.transporter = nodemailer.createTransport({
             service: 'gmail',
             auth: {
-                user: process.env.EMAIL,
-                pass: process.env.PASSWORD,
+                user: "testfar07@gmail.com",
+                pass: "cmkvjfeqkrpqfyfz",
             }
         });
     } 
     
-async sendmessage({emailUser, num}){
+    
+async sendmessage({emailUser, num}: SendMessageParams): Promise<void>{
       await this.transporter.sendMail({
-        from:process.env.EMAIL,
+        from:"testfar07@gmail.com",
         to:emailUser,
         text:num
     })

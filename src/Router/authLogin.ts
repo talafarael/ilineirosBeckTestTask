@@ -1,23 +1,23 @@
 const bcrypt = require("bcryptjs")
 const { validationResult } = require('express-validator');
 const User:any = require("../model/user")
-const tempData = require("./cache")
-const { secret } = require('./config');
+const  tempData=require('../cache')
+const { secret } = require('../config');
 const jwt = require('jsonwebtoken');
-const forgotdata = require('../email');
-const Emailsend = require('./email');
+// const forgotdata = require('../email');
+const Emailsend = require('../email');
 const { json } = require('express');
 const emailSender = new Emailsend();
-const generateAccessToken = (id) => {
+const generateAccessToken = (id:string) => {
 	const playold = {
 		id,
 	}
 	return jwt.sign(playold, secret, {expiresIn: "24h"})
 }
 class authController {
-	async registrationPartOne(req, res) {
+	async registrationPartOne(req:any, res:any) {
 		try {
-			console.log(req.body)
+			console.log('1')
 			const errors = validationResult(req)
 			if (!errors.isEmpty()) {
 				return res
@@ -26,14 +26,14 @@ class authController {
 			}
 
 			const {username, password} = req.body
-
+console.log(username)
 			const candidate = await User.findOne({username})
 			if (candidate) {
 				return res.status(400).json({
 					message: "Пользователь с таким именем уже существует",
 				})
 			}
-
+console.log('1')
 			const hashPassword = await bcrypt.hash(password, 7)
 			const chaecknum = Math.floor(Math.random() * 10000)
 			const status = true
@@ -43,9 +43,9 @@ class authController {
 				30 * 60 * 1000
 			)
 
-			return res.status(200).json({
-				redirect: "/email",
-			})
+			return res.status(200).json(
+				{ message: 'regis good' }
+			)
 		} catch (e) {
 			console.error(e)
 			res.status(400).json({message: "Registration error"})
@@ -153,7 +153,7 @@ class authController {
 async registerCreate(req, res) {
 	try {
 					const savedData = tempData.getTempData('registrationData');
-					const { password } = req.body;
+					const { code } = req.body;
 
 					if (!savedData) {
 									return res
@@ -162,11 +162,11 @@ async registerCreate(req, res) {
 					}
 
 					const { username, chaecknum, hashPassword } = savedData;
-					if (chaecknum == password) {
+					if (chaecknum == code) {
 									const user = new User({ username, password: hashPassword });
 									await user.save();
 									return res.status(200).json({
-													redirect: '/index',
+												message:'regist successfull'
 									});
 					}
 					return res.status(400).json({ message: 'Invalid code' });
@@ -175,7 +175,7 @@ async registerCreate(req, res) {
 					return res.status(500).json({ message: 'Registration error' });
 	}
 }
-	async login(req, res) {
+	async login(req:any, res:any) {
 		try {
 			const {username, password} = req.body
 			const user = await User.findOne({username})
