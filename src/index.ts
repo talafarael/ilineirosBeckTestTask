@@ -16,7 +16,7 @@ const start = async () => {
 	
 		await mongoose.connect("mongodb+srv://artemk2504:farashiner@cluster0.1pp5frh.mongodb.net/")
 
-		app.get('/', (req, res) => {
+		app.get('/', (req: any, res: any) => {
 			res.render('index');
 })
 		app.listen(PORT, () => {

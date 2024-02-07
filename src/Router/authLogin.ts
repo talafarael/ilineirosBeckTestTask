@@ -2,6 +2,7 @@ const bcrypt = require("bcryptjs")
 const { validationResult } = require('express-validator');
 const User:any = require("../model/user")
 const  tempData=require('../cache')
+const{ Request, Response, NextFunction } =require('express');
 const { secret } = require('../config');
 const jwt = require('jsonwebtoken');
 // const forgotdata = require('../email');
@@ -15,14 +16,12 @@ const generateAccessToken = (id:string) => {
 	return jwt.sign(playold, secret, {expiresIn: "24h"})
 }
 class authController {
-	async registrationPartOne(req:any, res:any) {
+	async registrationPartOne(req, res) {
 		try {
 			console.log('1')
 			const errors = validationResult(req)
 			if (!errors.isEmpty()) {
-				return res
-					.status(400)
-					.json({message: "Ошибка при регистрации", errors})
+				return res.status(400).json({message: "Ошибка при регистрации", errors})
 			}
 
 			const {username, password} = req.body
@@ -163,7 +162,7 @@ async registerCreate(req, res) {
 
 					const { username, chaecknum, hashPassword } = savedData;
 					if (chaecknum == code) {
-									const user = new User({ username, password: hashPassword });
+									const user = new User({ username, password: hashPassword ,balance:100});
 									await user.save();
 									return res.status(200).json({
 												message:'regist successfull'
