@@ -1,14 +1,16 @@
 const Router=require('express')
 const router=new Router
-const controller=require('./Router/authLogin')
+const controllerLogin=require('./Router/authLogin')
+const upload=require('./middleware/multer')
+const controlleraAuction=require('./Router/authAuction')
 //authorization
-router.post('/login', controller.login)
-router.post('/registrationpartone',controller.registrationPartOne)
-router.post('/resendemail',controller.resendemail)
-router.post('/registercreate',controller.registerCreate)
-router.get('/sendemail',controller.SendEmail)
-//auk
-
+router.post('/login', controllerLogin.login)
+router.post('/registration',controllerLogin.registration)
+router.post('/resendemail',controllerLogin.resendemail)
+router.post('/registercreate',controllerLogin.registerCreate)
+router.get('/sendemail',controllerLogin.SendEmail)
+//aukction
+router.post('/createauction',upload.single("image"),)
 
 
 

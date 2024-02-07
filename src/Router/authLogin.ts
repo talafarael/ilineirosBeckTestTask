@@ -16,7 +16,7 @@ const generateAccessToken = (id:string) => {
 	return jwt.sign(playold, secret, {expiresIn: "24h"})
 }
 class authController {
-	async registrationPartOne(req, res) {
+	async registration(req, res) {
 		try {
 			console.log('1')
 			const errors = validationResult(req)
@@ -24,9 +24,9 @@ class authController {
 				return res.status(400).json({message: "Ошибка при регистрации", errors})
 			}
 
-			const {username, password} = req.body
-console.log(username)
-			const candidate = await User.findOne({username})
+			const {email, password} = req.body
+
+			const candidate = await User.findOne({email})
 			if (candidate) {
 				return res.status(400).json({
 					message: "Пользователь с таким именем уже существует",
@@ -38,7 +38,7 @@ console.log('1')
 			const status = true
 			tempData.setTempData(
 				"registrationData",
-				{username, chaecknum, hashPassword, status},
+				{email, chaecknum, hashPassword, status},
 				30 * 60 * 1000
 			)
 
@@ -53,7 +53,7 @@ console.log('1')
 	async resendemail(req, res) {
 		try {
 			const savedData = tempData.getTempData("registrationData")
-			const username = savedData.username
+			const username = savedData.email
 
 			const chaecknum = Math.floor(Math.random() * 10000)
 			let status = false
