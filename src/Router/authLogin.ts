@@ -53,19 +53,19 @@ console.log('1')
 	async resendemail(req, res) {
 		try {
 			const savedData = tempData.getTempData("registrationData")
-			const username = savedData.email
+			const email = savedData.email
 
 			const chaecknum = Math.floor(Math.random() * 10000)
 			let status = false
 			await emailSender.sendmessage({
-				emailUser: username,
+				emailUser: email,
 				num: chaecknum.toString(),
 			})
 
 			tempData.setTempData(
 				"registrationData",
 				{
-					username,
+					email,
 					chaecknum,
 					hashPassword: savedData.hashPassword,
 					status,
@@ -87,12 +87,12 @@ console.log('1')
 					.json({message: "Registration data not found"})
 			}
 
-			const username = savedData.username
+			const 	email = savedData.	email
 			const chaecknum = savedData.chaecknum
 			let status = savedData.status
 			if (status) {
 				await emailSender.sendmessage({
-					emailUser: username,
+					emailUser:	email,
 					num: chaecknum.toString(),
 				})
 
@@ -100,7 +100,7 @@ console.log('1')
 				tempData.setTempData(
 					"registrationData",
 					{
-						username,
+						email,
 						chaecknum,
 						hashPassword: savedData.hashPassword,
 						status,
@@ -160,9 +160,9 @@ async registerCreate(req, res) {
 													.json({ message: 'Registration data not found' });
 					}
 
-					const { username, chaecknum, hashPassword } = savedData;
+					const { 	email, chaecknum, hashPassword } = savedData;
 					if (chaecknum == code) {
-									const user = new User({ username, password: hashPassword ,balance:100});
+									const user = new User({ 	email, password: hashPassword ,balance:100});
 									await user.save();
 									return res.status(200).json({
 												message:'regist successfull'
@@ -176,8 +176,8 @@ async registerCreate(req, res) {
 }
 	async login(req:any, res:any) {
 		try {
-			const {username, password} = req.body
-			const user = await User.findOne({username})
+			const {email, password} = req.body
+			const user = await User.findOne({email})
 			if (!user) {
 				return res.status(400).json({
 					message: "Пользователь с таким именем не существует ",

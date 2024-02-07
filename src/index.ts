@@ -2,12 +2,14 @@ const express=require('express')
 const mongoose =require( "mongoose")
 const path = require('path');
 const app = express()
+const cors = require("cors");
 const PORT = process.env.PORT || 3000
 const authRouter=require('./authRouter')
 app.use(express.json())
-app.use('/auth',authRouter)
-const cors = require("cors");
+
 app.use(cors());
+app.use('/auth',authRouter)
+
 
 app.set('view engine', 'ejs');
 app.set('views', path.resolve(__dirname,'ejs'));
