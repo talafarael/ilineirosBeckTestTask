@@ -1,14 +1,28 @@
+const {Auction}=require('../model/Auction')
+
 interface Body {
 	name:string,
 	time:string,
-	minimalSumm:number,
+	timeLive:number,
+	rates:number,
 	value:string
 	}
 
-class auctionController{
+class {
     async createAuction(req, res){
-					const {name,time,minimalSumm,value}:Body=req.body
+					const {name,time,rates,timeLive,value}:Body=req.body
 
+					const auction=new Auction({
+					
+						img:'',
+						name:name,
+						value:value,
+						rates:rates,
+						timeLive:timeLive,
+						listRates:[],
+
+					})
+					await auction.save()
 
 
 
