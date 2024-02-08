@@ -1,15 +1,15 @@
 const bcrypt = require("bcryptjs")
-const { validationResult } = require('express-validator');
-const User:any = require("../model/user")
-const  tempData=require('../cache')
-const{ Request, Response, NextFunction } =require('express');
-const { secret } = require('../config');
-const jwt = require('jsonwebtoken');
+const {validationResult} = require("express-validator")
+const User = require("../model/user")
+const tempData = require("../cache")
+const {Request, Response, NextFunction} = require("express")
+const {secret} = require("../config")
+const jwt = require("jsonwebtoken")
 // const forgotdata = require('../email');
-const Emailsend = require('../email');
-const { json } = require('express');
-const emailSender = new Emailsend();
-const generateAccessToken = (id:string) => {
+const Emailsend = require("../email")
+const {json} = require("express")
+const emailSender = new Emailsend()
+const generateAccessToken = (id) => {
 	const playold = {
 		id,
 	}
@@ -18,10 +18,12 @@ const generateAccessToken = (id:string) => {
 class authController {
 	async registration(req, res) {
 		try {
-			console.log('1')
+			console.log("1")
 			const errors = validationResult(req)
 			if (!errors.isEmpty()) {
-				return res.status(400).json({message: "Ошибка при регистрации", errors})
+				return res
+					.status(400)
+					.json({message: "Ошибка при регистрации", errors})
 			}
 
 			const {email, password} = req.body
@@ -32,7 +34,7 @@ class authController {
 					message: "Пользователь с таким именем уже существует",
 				})
 			}
-console.log('1')
+			console.log("1")
 			const hashPassword = await bcrypt.hash(password, 7)
 			const chaecknum = Math.floor(Math.random() * 10000)
 			const status = true
@@ -42,9 +44,7 @@ console.log('1')
 				30 * 60 * 1000
 			)
 
-			return res.status(200).json(
-				{ message: 'regis good' }
-			)
+			return res.status(200).json({message: "regis good"})
 		} catch (e) {
 			console.error(e)
 			res.status(400).json({message: "Registration error"})
@@ -87,12 +87,12 @@ console.log('1')
 					.json({message: "Registration data not found"})
 			}
 
-			const 	email = savedData.	email
+			const email = savedData.email
 			const chaecknum = savedData.chaecknum
 			let status = savedData.status
 			if (status) {
 				await emailSender.sendmessage({
-					emailUser:	email,
+					emailUser: email,
 					num: chaecknum.toString(),
 				})
 
@@ -117,64 +117,78 @@ console.log('1')
 			return res.status(400).json({message: "Email sending error"})
 		}
 	}
-//  async sendEmailForgotPassword(req, res) {
-// 		try {
-// 						const { email } = req.body;
-// 						const username = email;
-// 						const candidate = await User.findOne({ username });
-// 						if (!candidate) {
-// 										return res
-// 														.status(400)
-// 														.json({ message: 'Ошибка при регистрации', errors });
-// 						}
-// 						const expiresIn = 1800; 
+	//  async sendEmailForgotPassword(req, res) {
+	// 		try {
+	// 						const { email } = req.body;
+	// 						const username = email;
+	// 						const candidate = await User.findOne({ username });
+	// 						if (!candidate) {
+	// 										return res
+	// 														.status(400)
+	// 														.json({ message: 'Ошибка при регистрации', errors });
+	// 						}
+	// 						const expiresIn = 1800;
 
-// 						const hashusername = jwt.sign({ username }, secret, {
-// 										expiresIn,
-// 						});
+	// 						const hashusername = jwt.sign({ username }, secret, {
+	// 										expiresIn,
+	// 						});
 
-// 						console.log('send '+hashusername);
+	// 						console.log('send '+hashusername);
 
-// 						const ffff = `${process.env.HOST}/acountforgot?token=${hashusername}`;
-// 						forgotdata.setTempData('email', { email }, 30 * 60 * 1000);
-// 						const em = forgotdata.getTempData('email');
-// 						await forgotEmailsend.sendmessage({
-// 										emailUser: em.email,
-// 										num: ffff.toString(),
-// 						});
-// 						console.log(em);
-// 						res.status(200).json({ message: 'em' });
-// 		} catch (e) {
-// 						console.log(e);
-// 						res.status(400).json({ message: 'Registration error' });
-// 		}
-// }
-async registerCreate(req, res) {
-	try {
-					const savedData = tempData.getTempData('registrationData');
-					const { code } = req.body;
+	// 						const ffff = `${process.env.HOST}/acountforgot?token=${hashusername}`;
+	// 						forgotdata.setTempData('email', { email }, 30 * 60 * 1000);
+	// 						const em = forgotdata.getTempData('email');
+	// 						await forgotEmailsend.sendmessage({
+	// 										emailUser: em.email,
+	// 										num: ffff.toString(),
+	// 						});
+	// 						console.log(em);
+	// 						res.status(200).json({ message: 'em' });
+	// 		} catch (e) {
+	// 						console.log(e);
+	// 						res.status(400).json({ message: 'Registration error' });
+	// 		}
+	// }
+	async registerCreate(req, res) {
+		try {
+			const savedData = tempData.getTempData("registrationData")
+			const {code} = req.body
 
-					if (!savedData) {
-									return res
-													.status(400)
-													.json({ message: 'Registration data not found' });
-					}
+			if (!savedData) {
+				return res
+					.status(400)
+					.json({message: "Registration data not found"})
+			}
 
-					const { 	email, chaecknum, hashPassword } = savedData;
-					if (chaecknum == code) {
-									const user = new User({ 	email, password: hashPassword ,balance:100});
-									await user.save();
-									return res.status(200).json({
-												message:'regist successfull'
-									});
-					}
-					return res.status(400).json({ message: 'Invalid code' });
-	} catch (error) {
-					console.error('Error during registration:', error);
-					return res.status(500).json({ message: 'Registration error' });
+			const {email, chaecknum, hashPassword, status} = savedData
+			if (chaecknum == code) {
+				const user = new User({
+					email:email,
+					password: hashPassword,
+					balance: 100,
+				})
+				await user.save()
+				return res.status(200).json({
+					message: "regist successfull",
+				})
+			}
+			tempData.setTempData(
+				"registrationData",
+				{
+					email,
+					chaecknum,
+					hashPassword,
+					status,
+				},
+				30 * 60 * 1000
+			)
+			return res.status(400).json({message: "Invalid code"})
+		} catch (error) {
+			console.error("Error during registration:", error)
+			return res.status(500).json({message: "Registration error"})
+		}
 	}
-}
-	async login(req:any, res:any) {
+	async login(req, res) {
 		try {
 			const {email, password} = req.body
 			const user = await User.findOne({email})
