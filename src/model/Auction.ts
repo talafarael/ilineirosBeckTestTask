@@ -1,11 +1,14 @@
 const {model, Schema} = require("mongoose")
 const Auction = new Schema({
 	img: {type: String,},
-    name: {type: String,},
-    value:{type:String},
+    title: {type: String,},
+    minRates:{type: String},
+    desct:{type:String},
     rates:{type:String},
-	time: {type: String, required: true},
+    timeStart:{type:String},
+    timeEnd:{type:String},
 	timeLive:{type:Number},
-    listRates:{}
+    listRates:{type:[]},
+    owner:{type:String}
 })
 module.exports = model("Auction",Auction)
