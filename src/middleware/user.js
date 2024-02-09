@@ -1,17 +1,18 @@
 const jwt = require("jsonwebtoken")
 const {secret} = require("../config")
 
-module.exports = function (req: Request, res: Response, next: Function) {
+module.exports = function (req, res, next) {
 
 
 	try {
-		const {token}:{ token: string } = req.body
+		const {token} = req.body
 		if (!token) {
 			return res
 				.status(403)
 				.json({message: "Пользователь не авторизован"})
 		}
 		const decodedData = jwt.verify(token, secret)
+		console.log(decodedData)
 		req.user = decodedData
 
 		next()
