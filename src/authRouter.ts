@@ -12,6 +12,7 @@ router.post('/resendemail',controllerLogin.resendemail)
 router.post('/registercreate',controllerLogin.registerCreate)
 router.get('/sendemail',controllerLogin.SendEmail)
 //aukction
+router.get('/getauction',auctionController.getAuction)
 router.post('/createauction',middlewareUser,auctionController.createAuction)
 
 
