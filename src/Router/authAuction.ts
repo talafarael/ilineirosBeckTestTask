@@ -16,7 +16,7 @@ interface Body {
 class authAuction {
 	async createAuction(req: Request, res: Response) {
 		try {
-			const {title, minRates, endDate, desct, token} = req.body
+			const {title, minRates, endDate, desc, token} = req.body
 			if (endDate == undefined) {
 				return res.status(400).json({
 					message: "Undefined variable 'timeLive' is not defined",
@@ -45,7 +45,7 @@ class authAuction {
 				title: title,
 				rates: minRates,
 				state: false,
-				desct: desct,
+				desct: desc,
 				minRates: minRates,
 				timeEnd: endDate,
 				active:true,
