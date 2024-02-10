@@ -48,7 +48,7 @@ class authAuction {
 				desct: desct,
 				minRates: minRates,
 				timeEnd: endDate,
-
+				active:truem
 				timeStart: currentDate,
 				listRates: [],
 				owner: id,
