@@ -13,13 +13,15 @@ app.use(cors({
 	origin: true,
 	credentials: true
 }));
-app.use('/auth',authRouter)
+
 
 
 app.set('view engine', 'ejs');
 app.set('views', path.resolve(__dirname,'ejs'));
 
 app.use(express.static('public'));
+
+app.use('/auth',authRouter)
 const start = async () => {
 	try {
 	
