@@ -4,12 +4,25 @@ const {secret} = require("../config")
 const User = require("../model/user")
 const verifyToken = require("../middleware/verify")
 import express, {Express, Request, Response} from "express"
+const {Storage} = require("@google-cloud/storage")
 
-
+const projectId = "commanding-ring-409619" // Get this from Google Cloud
+const keyFilename = "mykey.json" // Get this from Google Cloud -> Credentials -> Service Accounts
+const storage = new Storage({
+	projectId,
+	keyFilename,
+})
+const bucket = storage.bucket("storageafarel")
 class authAuction {
 	async createAuction(req: Request, res: Response) {
 		try {
-console.log(req.body)
+			const file = req.file
+			if (!file) {
+				return res.status(400).json({message: "No file uploaded"})
+			}
+
+  	const fileName = `${Date.now()}-${file.originalname}`
+			const fileUrl = `https://storage.googleapis.com/storageafarel/${fileName}`
 			const {title, minRates, endDate, desc, token} = req.body
 			console.log(title, minRates, endDate, desc, token)
 			if (endDate == undefined) {
@@ -43,7 +56,7 @@ console.log(req.body)
 				desct: desc,
 				minRates: minRates,
 				timeEnd: endDate[0],
-				active:true,
+				active: true,
 				timeStart: currentDate,
 				listRates: [],
 				owner: id,
@@ -53,6 +66,7 @@ console.log(req.body)
 			res.status(200).json({
 				success: true,
 				message: "Auction created successfully",
+				fileUrl: fileUrl,
 			})
 		} catch (e) {
 			console.log(e)
