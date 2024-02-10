@@ -6,13 +6,15 @@ const cors = require("cors");
 const PORT = process.env.PORT || 5000
 const authRouter=require('./authRouter')
 app.use(express.json())
+const multer = require('multer');
+const upload = multer();
 
 app.use(cors({
 	origin: true,
 	credentials: true
 }));
 app.use('/auth',authRouter)
-
+app.use(upload.none());
 
 app.set('view engine', 'ejs');
 app.set('views', path.resolve(__dirname,'ejs'));
