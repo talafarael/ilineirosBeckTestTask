@@ -10,7 +10,7 @@ class authAuction {
 	async createAuction(req: Request, res: Response) {
 		try {
 
-			const formData = req.body
+			const {formData} = req.body
 			console.log(formData.title, formData.minRates, formData.endDate, formData.desc, formData.token)
 			if (endDate == undefined) {
 				return res.status(400).json({
