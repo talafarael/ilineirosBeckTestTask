@@ -16,25 +16,30 @@ interface Body {
 class authAuction {
 	async createAuction(req: Request, res: Response) {
 		try {
-			const {title, minRates, timeLive, desct, token}: Body = req.body
-			var currentDate = new Date()
-			if (timeLive > 48) {
-				return res.status(400).json({
-					message:
-						"The allowable lifespan has been exceeded. Please specify a lifespan that does not exceed 48 hours.",
-				})
-			}
-			if (timeLive == undefined) {
+			const {title, minRates, timeEnd, desct, token} = req.body
+			if (timeEnd == undefined) {
 				return res.status(400).json({
 					message: "Undefined variable 'timeLive' is not defined",
 				})
 			}
 
-			console.log(timeLive)
+			var currentDate = new Date()
+		// const	date=timeEnd-currentDate 
+			// var days = Math.floor(milliseconds / (1000 * 60 * 60 * 24))
+			// var hours = Math.floor(
+			// 	(milliseconds % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+			// )
+			// var minutes = Math.floor(
+			// 	(milliseconds % (1000 * 60 * 60)) / (1000 * 60)
+			// )
+			// var seconds = Math.floor((milliseconds % (1000 * 60)) / 1000)
+			
 
-			var futureDate = new Date(
-				currentDate.getTime() + timeLive * 60 * 60 * 1000
-			)
+		
+
+			// var futureDate = new Date(
+			// 	currentDate.getTime() + timeLive * 60 * 60 * 1000
+			// )
 
 			const {user, id} = await verifyToken(token, res)
 
@@ -45,8 +50,8 @@ class authAuction {
 				state: false,
 				desct: desct,
 				minRates: minRates,
-				timeEnd: futureDate,
-				timeLive: timeLive,
+				timeEnd: timeEnd,
+	
 				timeStart: currentDate,
 				listRates: [],
 				owner: id,
@@ -121,7 +126,7 @@ class authAuction {
 			auction.save()
 			res.status(200).json({
 				auction: auction,
-				message: "Successful bid",
+				message: "",
 			})
 		} catch (e) {
 			console.log(e)
