@@ -10,8 +10,8 @@ class authAuction {
 	async createAuction(req: Request, res: Response) {
 		try {
 
-			const {title, minRates, endDate, desc, token} = req.body
-			console.log(title, minRates, endDate, desc, token)
+			const formData = req.body
+			console.log(formData.title, formData.minRates, formData.endDate, formData.desc, formData.token)
 			if (endDate == undefined) {
 				return res.status(400).json({
 					message: "Undefined variable 'timeLive' is not defined",
