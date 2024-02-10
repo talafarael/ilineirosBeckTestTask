@@ -7,7 +7,7 @@ async function verifyToken(token: string, res: any) {
     try {
         const decodedData = await jwt.verify(token, secret) as JwtPayload;
         const id = decodedData.id;
-        const user = await User.findOne({ _id: id });
+        const user = await User.findById(id.trim());
         if (!user) {
             return res.status(400).json({
                 message: "The user with this name does not exist",
