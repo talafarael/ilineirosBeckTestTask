@@ -4,19 +4,14 @@ const {secret} = require("../config")
 const User = require("../model/user")
 const verifyToken = require("../middleware/verify")
 import express, {Express, Request, Response} from "express"
-interface Body {
-	title: string
-	time: string
-	timeLive: number
-	minRates: number
-	desct: string
-	token: string
-}
+
 
 class authAuction {
 	async createAuction(req: Request, res: Response) {
 		try {
+
 			const {title, minRates, endDate, desc, token} = req.body
+			console.log(title, minRates, endDate, desc, token)
 			if (endDate == undefined) {
 				return res.status(400).json({
 					message: "Undefined variable 'timeLive' is not defined",
@@ -47,7 +42,7 @@ class authAuction {
 				state: false,
 				desct: desc,
 				minRates: minRates,
-				timeEnd: endDate,
+				timeEnd: endDate[0],
 				active:true,
 				timeStart: currentDate,
 				listRates: [],
