@@ -1,0 +1,24 @@
+
+import jwt, { JwtPayload } from "jsonwebtoken";
+const { secret } = require("../config");
+const User = require("../model/user");
+
+async function verifyToken(token: string, res: any) {
+    try {
+        const decodedData = await jwt.verify(token, secret) as JwtPayload;
+        const id = decodedData.id;
+        const user = await User.findOne({ _id: id });
+        if (!user) {
+            return res.status(400).json({
+                message: "The user with this name does not exist",
+            });
+        }
+        return {user ,id};
+    } catch (error) {
+        return res.status(401).json({
+            message: "Invalid token",
+        });
+    }
+}
+
+module.exports = verifyToken;

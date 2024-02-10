@@ -5,6 +5,7 @@ const Auction = new Schema({
     minRates:{type: String},
     desct:{type:String},
     rates:{type:String},
+    state:{type:Boolean},
     timeStart:{type:String},
     timeEnd:{type:String},
 	timeLive:{type:Number},
