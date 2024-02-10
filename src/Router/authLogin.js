@@ -23,7 +23,7 @@ class authController {
 			if (!errors.isEmpty()) {
 				return res
 					.status(400)
-					.json({message: "Ошибка при регистрации", errors})
+					.json({message: "Error occurred during registration", errors})
 			}
 
 			const {email, password} = req.body
@@ -31,7 +31,7 @@ class authController {
 			const candidate = await User.findOne({email})
 			if (candidate) {
 				return res.status(400).json({
-					message: "Пользователь с таким именем уже существует",
+					message: "The user with this name already exists",
 				})
 			}
 			console.log("1")
@@ -113,7 +113,7 @@ class authController {
 					.json({message: "Email sent successfully"})
 			}
 		} catch (e) {
-			console.error("Ошибка при отправке email:", e)
+			console.error("There was an error sending the email:", e)
 			return res.status(400).json({message: "Email sending error"})
 		}
 	}
@@ -194,12 +194,12 @@ class authController {
 			const user = await User.findOne({email})
 			if (!user) {
 				return res.status(400).json({
-					message: "Пользователь с таким именем не существует ",
+					message: "User with such name does not exist ",
 				})
 			}
 			const validPassword = bcrypt.compareSync(password, user.password)
 			if (!validPassword) {
-				return res.status(400).json({message: `Введен неверный пароль`})
+				return res.status(400).json({message: `The password entered is incorrect`})
 			}
 			const token = generateAccessToken(user._id)
 			return res.status(200).json({
