@@ -9,7 +9,7 @@ import express, {Express, Request, Response} from "express"
 class authAuction {
 	async createAuction(req: Request, res: Response) {
 		try {
-
+console.log(req.body)
 			const {title, minRates, endDate, desc, token} = req.body
 			console.log(title, minRates, endDate, desc, token)
 			if (endDate == undefined) {
