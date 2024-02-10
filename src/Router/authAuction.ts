@@ -9,9 +9,9 @@ import express, {Express, Request, Response} from "express"
 class authAuction {
 	async createAuction(req: Request, res: Response) {
 		try {
-console.log(req.body)
-			const {formData} = req.body
-			console.log(formData.title, formData.minRates, formData.endDate, formData.desc, formData.token)
+
+			const {title, minRates, endDate, desc, token} = req.body
+			console.log(title, minRates, endDate, desc, token)
 			if (endDate == undefined) {
 				return res.status(400).json({
 					message: "Undefined variable 'timeLive' is not defined",
