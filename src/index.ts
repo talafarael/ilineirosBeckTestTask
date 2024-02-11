@@ -8,14 +8,11 @@ const authRouter=require('./authRouter')
 app.use(express.json())
 const multer = require('multer');
 const upload = multer();
+
 const bodyParser=require('body-parser')
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.use(cors({
-	origin: true,
-	credentials: true
-}));
 
 
 
