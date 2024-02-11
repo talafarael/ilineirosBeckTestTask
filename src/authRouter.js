@@ -100,7 +100,7 @@ router.post('/createauction',type,async(req, res)=> {
 			state: false,
 			desct: desc,
 			minRates: minRates,
-			timeEnd: endDate[0],
+			timeEnd: endDate,
 			active: true,
 			timeStart: currentDate,
 			listRates: [],
