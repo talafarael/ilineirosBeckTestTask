@@ -4,14 +4,31 @@ const {secret} = require("../config")
 const User = require("../model/user")
 const verifyToken = require("../middleware/verify")
 import express, {Express, Request, Response} from "express"
-
+const {Storage} = require("@google-cloud/storage")
 
 class authAuction {
-	async createAuction(req: Request, res: Response) {
+	async createAuction(req, res: Response) {
 		try {
-console.log(req.body)
+			if (!req.file) {
+				return res.status(400).send("No file uploaded.")
+			}
+
+			// File is available as req.file
+			console.log(req.file)
+			// const blob = bucket.file(req.file.originalname);
+			// const blobStream = blob.createWriteStream();
+
+			// blobStream.on("finish", () => {
+			// 		res.status(200).send("Success");
+			// 		console.log("Success");
+			// });
+			// blobStream.end(req.file.buffer);
+
+			const file = req.files[0]
+			console.log(file)
+			// const fileUrl = `https://storage.googleapis.com/storageafarel/${fileName}`
 			const {title, minRates, endDate, desc, token} = req.body
-			console.log(title, minRates, endDate, desc, token)
+			// console.log(title, minRates, endDate, desc, token)
 			if (endDate == undefined) {
 				return res.status(400).json({
 					message: "Undefined variable 'timeLive' is not defined",
@@ -43,7 +60,7 @@ console.log(req.body)
 				desct: desc,
 				minRates: minRates,
 				timeEnd: endDate[0],
-				active:true,
+				active: true,
 				timeStart: currentDate,
 				listRates: [],
 				owner: id,
@@ -53,6 +70,7 @@ console.log(req.body)
 			res.status(200).json({
 				success: true,
 				message: "Auction created successfully",
+
 			})
 		} catch (e) {
 			console.log(e)

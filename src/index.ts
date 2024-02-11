@@ -9,11 +9,12 @@ app.use(express.json())
 const multer = require('multer');
 const upload = multer();
 
-app.use(cors({
-	origin: true,
-	credentials: true
-}));
-app.use(upload.none());
+const bodyParser=require('body-parser')
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+
+
+
 
 
 app.set('view engine', 'ejs');
