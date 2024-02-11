@@ -92,6 +92,8 @@ class authAuction {
 	async getAuctionOne(req: Request, res: Response) {
 		try {
 			const {id} = req.body
+			console.log(id)
+			console.log(req.body)
 			const auction = await Auction.findOne({_id: id})
 			res.status(200).json({
 				auction: auction,
