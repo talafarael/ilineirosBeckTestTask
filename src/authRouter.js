@@ -21,7 +21,7 @@ const storage = new Storage({
 	keyFilename,
 })
 const bucket = storage.bucket("storageafarel")
-var type = multer.single("image")
+var type = multer.single("img")
 // const upload=require('./middleware/multer')
 // const controlleraAuction=require('./Router/authAuction')
 //authorization
