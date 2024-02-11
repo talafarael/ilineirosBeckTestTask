@@ -3,7 +3,7 @@ const mongoose =require( "mongoose")
 const path = require('path');
 const app = express()
 const cors = require("cors");
-const PORT = process.env.PORT || 6000
+const PORT = process.env.PORT || 5000
 const authRouter=require('./authRouter')
 app.use(express.json())
 const multer = require('multer');
@@ -14,6 +14,7 @@ app.use(cors({
 	credentials: true
 }));
 app.use(upload.none());
+
 
 
 app.set('view engine', 'ejs');
