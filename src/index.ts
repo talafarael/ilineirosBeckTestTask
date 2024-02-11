@@ -8,12 +8,12 @@ const authRouter=require('./authRouter')
 app.use(express.json())
 const multer = require('multer');
 const upload = multer();
-app.use(upload.none());
+
 app.use(cors({
 	origin: true,
 	credentials: true
 }));
-
+app.use(upload.none());
 
 
 app.set('view engine', 'ejs');
