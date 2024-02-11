@@ -8,9 +8,7 @@ const Multer = require("multer");
 const verifyToken = require("./middleware/verify")
 const Auction = require("./model/Auction")
 const projectId = "commanding-ring-409619" // Get this from Google Cloud
-const keyFilename = "mykey.json" // Get this from Google Cloud -> Credentials -> Service Accounts
-
-
+const keyFilename = "mykey.json" 
 
 const multer = Multer({
 	storage: Multer.memoryStorage(),
@@ -23,7 +21,7 @@ const storage = new Storage({
 	keyFilename,
 })
 const bucket = storage.bucket("storageafarel")
-
+var type = multer.single("image")
 // const upload=require('./middleware/multer')
 // const controlleraAuction=require('./Router/authAuction')
 //authorization
@@ -39,19 +37,24 @@ router.post('/getauctionone',auctionController.getAuctionOne)
 router.post('/makebidauctionone',auctionController.makeBidAuctionOne)
 
 
-router.post('/createauction',multer.fields('img'),async(req, res)=> {
+router.post('/createauction',type,async(req, res)=> {
 	try {
-console.log('afafafaf')
 		if (req.file) {
 			console.log("File found, trying to upload...");
+			// const fileName = `${Date.now()}-${file.originalname}`
+			// 	const fileUrl = `https://storage.googleapis.com/storageafarel/${fileName}`
 			const blob = bucket.file(req.file.originalname);
 			const blobStream = blob.createWriteStream();
-
+	  
 			blobStream.on("finish", () => {
-		
-					console.log("Success");
-			});}
-			console.log(req.file)
+				
+			  console.log("Success");
+			});
+			
+			blobStream.end(req.file.buffer);
+			
+		  } 
+		const fileName=`https://storage.cloud.google.com/storageafarel/${req.file.originalname}`
 		// File is available as req.file
 
 		// const blob = bucket.file(req.file.originalname);
@@ -91,7 +94,7 @@ console.log('afafafaf')
 		const {user, id} = await verifyToken(token, res)
 
 		const auction = new Auction({
-			img: "",
+			img: fileName,
 			title: title,
 			rates: minRates,
 			state: false,
