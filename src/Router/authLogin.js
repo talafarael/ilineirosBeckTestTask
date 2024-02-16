@@ -55,7 +55,7 @@ class authController {
 			const savedData = tempData.getTempData("registrationData")
 			const email = savedData.email
 
-			const chaecknum = Math.floor(Math.random() * 10000)
+			const chaecknum = Math.floor(Math.random() * 9000) + 1000;
 			let status = false
 			await emailSender.sendmessage({
 				emailUser: email,
