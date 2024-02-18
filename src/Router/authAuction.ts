@@ -3,80 +3,144 @@ import jwt, {JwtPayload} from "jsonwebtoken"
 const {secret} = require("../config")
 const User = require("../model/user")
 const verifyToken = require("../middleware/verify")
-import express, {Express, Request, Response} from "express"
+import express, { Request, Response} from "express"
 const {Storage} = require("@google-cloud/storage")
 
+const projectId = "commanding-ring-409619" // Get this from Google Cloud
+const keyFilename = "mykey.json" 
+
+const storage = new Storage({
+	projectId,
+	keyFilename,
+})
+const bucket = storage.bucket("storageafarel")
 class authAuction {
-	async createAuction(req, res: Response) {
+	async createAuction(req, res: Respons){
 		try {
-			if (!req.file) {
-				return res.status(400).send("No file uploaded.")
-			}
-
-			// File is available as req.file
-			console.log(req.file)
-			// const blob = bucket.file(req.file.originalname);
-			// const blobStream = blob.createWriteStream();
-
-			// blobStream.on("finish", () => {
-			// 		res.status(200).send("Success");
-			// 		console.log("Success");
-			// });
-			// blobStream.end(req.file.buffer);
-
-			const file = req.files[0]
-			console.log(file)
-			// const fileUrl = `https://storage.googleapis.com/storageafarel/${fileName}`
+			if (req.file) {
+				console.log("File found, trying to upload...");
+	
+				const blob = bucket.file(req.file.originalname);
+				const blobStream = blob.createWriteStream();
+		  
+				blobStream.on("finish", () => {
+					
+				  console.log("Success");
+				});
+				
+				blobStream.end(req.file.buffer);
+				
+			  } 
+			const fileName=`https://storage.cloud.google.com/storageafarel/${req.file.originalname}`
+			
 			const {title, minRates, endDate, desc, token} = req.body
-			// console.log(title, minRates, endDate, desc, token)
+		
 			if (endDate == undefined) {
 				return res.status(400).json({
 					message: "Undefined variable 'timeLive' is not defined",
 				})
 			}
-
+	
 			var currentDate = new Date()
-			// const	date=timeEnd-currentDate
-			// var days = Math.floor(milliseconds / (1000 * 60 * 60 * 24))
-			// var hours = Math.floor(
-			// 	(milliseconds % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
-			// )
-			// var minutes = Math.floor(
-			// 	(milliseconds % (1000 * 60 * 60)) / (1000 * 60)
-			// )
-			// var seconds = Math.floor((milliseconds % (1000 * 60)) / 1000)
-
-			// var futureDate = new Date(
-			// 	currentDate.getTime() + timeLive * 60 * 60 * 1000
-			// )
-
+			
+	
 			const {user, id} = await verifyToken(token, res)
-
+	
 			const auction = new Auction({
-				img: "",
+				img: fileName,
 				title: title,
 				rates: minRates,
 				state: false,
 				desct: desc,
 				minRates: minRates,
-				timeEnd: endDate[0],
+				timeEnd: endDate,
 				active: true,
 				timeStart: currentDate,
 				listRates: [],
 				owner: id,
 			})
 			await auction.save()
-
+	
 			res.status(200).json({
 				success: true,
 				message: "Auction created successfully",
-
+			
 			})
 		} catch (e) {
 			console.log(e)
 			res.status(400).json({message: "Registration error"})
 		}
 	}
+	// async createAuction(req, res: Response) {
+	// 	try {
+	// 		if (!req.file) {
+	// 			return res.status(400).send("No file uploaded.")
+	// 		}
+
+	// 		// File is available as req.file
+	// 		console.log(req.file)
+	// 		// const blob = bucket.file(req.file.originalname);
+	// 		// const blobStream = blob.createWriteStream();
+
+	// 		// blobStream.on("finish", () => {
+	// 		// 		res.status(200).send("Success");
+	// 		// 		console.log("Success");
+	// 		// });
+	// 		// blobStream.end(req.file.buffer);
+
+	// 		const file = req.files[0]
+	// 		console.log(file)
+	// 		// const fileUrl = `https://storage.googleapis.com/storageafarel/${fileName}`
+	// 		const {title, minRates, endDate, desc, token} = req.body
+	// 		// console.log(title, minRates, endDate, desc, token)
+	// 		if (endDate == undefined) {
+	// 			return res.status(400).json({
+	// 				message: "Undefined variable 'timeLive' is not defined",
+	// 			})
+	// 		}
+
+	// 		var currentDate = new Date()
+	// 		// const	date=timeEnd-currentDate
+	// 		// var days = Math.floor(milliseconds / (1000 * 60 * 60 * 24))
+	// 		// var hours = Math.floor(
+	// 		// 	(milliseconds % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+	// 		// )
+	// 		// var minutes = Math.floor(
+	// 		// 	(milliseconds % (1000 * 60 * 60)) / (1000 * 60)
+	// 		// )
+	// 		// var seconds = Math.floor((milliseconds % (1000 * 60)) / 1000)
+
+	// 		// var futureDate = new Date(
+	// 		// 	currentDate.getTime() + timeLive * 60 * 60 * 1000
+	// 		// )
+
+	// 		const {user, id} = await verifyToken(token, res)
+
+	// 		const auction = new Auction({
+	// 			img: "",
+	// 			title: title,
+	// 			rates: minRates,
+	// 			state: false,
+	// 			desct: desc,
+	// 			minRates: minRates,
+	// 			timeEnd: endDate[0],
+	// 			active: true,
+	// 			timeStart: currentDate,
+	// 			listRates: [],
+	// 			owner: id,
+	// 		})
+	// 		await auction.save()
+
+	// 		res.status(200).json({
+	// 			success: true,
+	// 			message: "Auction created successfully",
+
+	// 		})
+	// 	} catch (e) {
+	// 		console.log(e)
+	// 		res.status(400).json({message: "Registration error"})
+	// 	}
+	// }
 	async getAuction(req: Request, res: Response) {
 		try {
 			const auction = await Auction.find().limit(20)
