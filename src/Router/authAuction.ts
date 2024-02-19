@@ -3,11 +3,11 @@ import jwt, {JwtPayload} from "jsonwebtoken"
 const {secret} = require("../config")
 const User = require("../model/user")
 const verifyToken = require("../middleware/verify")
-import express, { Request, Response} from "express"
+import express, {Request, Response} from "express"
 const {Storage} = require("@google-cloud/storage")
 
 const projectId = "commanding-ring-409619" // Get this from Google Cloud
-const keyFilename = "mykey.json" 
+const keyFilename = "mykey.json"
 
 const storage = new Storage({
 	projectId,
@@ -15,37 +15,36 @@ const storage = new Storage({
 })
 const bucket = storage.bucket("storageafarel")
 class authAuction {
-	async createAuction(req, res: Respons){
+	async createAuction(req, res: Respons) {
 		try {
 			if (req.file) {
-				console.log("File found, trying to upload...");
-	
-				const blob = bucket.file(req.file.originalname);
-				const blobStream = blob.createWriteStream();
-		  
+				console.log("File found, trying to upload...")
+
+				const blob = bucket.file(req.file.originalname)
+				const blobStream = blob.createWriteStream()
+
 				blobStream.on("finish", () => {
-					
-				  console.log("Success");
-				});
-				
-				blobStream.end(req.file.buffer);
-				
-			  } 
-			const fileName=`https://storage.cloud.google.com/storageafarel/${req.file.originalname}`
-			
+					console.log("Success")
+				})
+
+				blobStream.end(req.file.buffer)
+			}
+			let fileName: string=''
+			if (req.file) {
+				fileName = `https://storage.googleapis.com/storageafarel/${req.file.originalname}`
+			}
 			const {title, minRates, endDate, desc, token} = req.body
-		
+
 			if (endDate == undefined) {
 				return res.status(400).json({
 					message: "Undefined variable 'timeLive' is not defined",
 				})
 			}
-	
+
 			var currentDate = new Date()
-			
-	
+
 			const {user, id} = await verifyToken(token, res)
-	
+
 			const auction = new Auction({
 				img: fileName,
 				title: title,
@@ -60,11 +59,10 @@ class authAuction {
 				owner: id,
 			})
 			await auction.save()
-	
+
 			res.status(200).json({
 				success: true,
 				message: "Auction created successfully",
-			
 			})
 		} catch (e) {
 			console.log(e)
