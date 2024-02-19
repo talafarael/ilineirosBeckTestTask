@@ -34,9 +34,9 @@ class authAuction {
 
 				blobStream.end(req.file.buffer)
 			}
-			let fileName: string=''
+	
 			
-				fileName = `https://storage.googleapis.com/storageafarel/${req.file.originalname}`
+			const	fileName = `https://storage.googleapis.com/storageafarel/${req.file.originalname}`
 		
 			const {title, minRates, endDate, desc, token} = req.body
 
