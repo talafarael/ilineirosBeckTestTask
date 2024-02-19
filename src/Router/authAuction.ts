@@ -17,6 +17,11 @@ const bucket = storage.bucket("storageafarel")
 class authAuction {
 	async createAuction(req, res: Respons) {
 		try {
+			if (!req.file) {
+			return	res.status(400).json({
+					message:"Not all fields are filled in, please try again"
+				})
+			}
 			if (req.file) {
 				console.log("File found, trying to upload...")
 
@@ -30,9 +35,9 @@ class authAuction {
 				blobStream.end(req.file.buffer)
 			}
 			let fileName: string=''
-			if (req.file) {
+			
 				fileName = `https://storage.googleapis.com/storageafarel/${req.file.originalname}`
-			}
+		
 			const {title, minRates, endDate, desc, token} = req.body
 
 			if (endDate == undefined) {
