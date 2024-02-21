@@ -8,6 +8,7 @@ const jwt = require("jsonwebtoken")
 // const forgotdata = require('../email');
 const Emailsend = require("../email")
 const {json} = require("express")
+const verifyToken=require('../middleware/verify')
 const emailSender = new Emailsend()
 const generateAccessToken = (id) => {
 	const playold = {
@@ -23,7 +24,10 @@ class authController {
 			if (!errors.isEmpty()) {
 				return res
 					.status(400)
-					.json({message: "Error occurred during registration", errors})
+					.json({
+						message: "Error occurred during registration",
+						errors,
+					})
 			}
 
 			const {email, password} = req.body
@@ -36,7 +40,8 @@ class authController {
 			}
 			console.log("1")
 			const hashPassword = await bcrypt.hash(password, 7)
-			const chaecknum = Math.floor(Math.random() * 10000)
+			const chaecknum = Math.floor(Math.random() * 8999) + 1000
+			console.log(chaecknum)
 			const status = true
 			tempData.setTempData(
 				"registrationData",
@@ -55,7 +60,8 @@ class authController {
 			const savedData = tempData.getTempData("registrationData")
 			const email = savedData.email
 
-			const chaecknum = Math.floor(Math.random() * 8999) + 1000;
+			const chaecknum = Math.floor(Math.random() * 8999) + 1000
+			console.log(chaecknum)
 			let status = false
 			await emailSender.sendmessage({
 				emailUser: email,
@@ -163,9 +169,11 @@ class authController {
 			const {email, chaecknum, hashPassword, status} = savedData
 			if (chaecknum == code) {
 				const user = new User({
-					email:email,
+					email: email,
 					password: hashPassword,
 					balance: 100,
+					bidAuction:[],
+	    ownAuction:[]
 				})
 				await user.save()
 				return res.status(200).json({
@@ -199,12 +207,32 @@ class authController {
 			}
 			const validPassword = bcrypt.compareSync(password, user.password)
 			if (!validPassword) {
-				return res.status(400).json({message: `The password entered is incorrect`})
+				return res
+					.status(400)
+					.json({message: `The password entered is incorrect`})
 			}
 			const token = generateAccessToken(user._id)
 			return res.status(200).json({
-				token:token
-});
+				token: token,
+			})
+		} catch (e) {
+			console.log(e)
+			res.status(400).json({message: "Registration error"})
+		}
+	}
+	async getUser(req, res) {
+		try {
+			const {token}= req.body
+			const {user, id} = await verifyToken(token, res)
+  const userInfo={
+			email:user.email,
+			balance:user.balance,
+			bidAuction:user.bidAuction,
+			ownAuction:user.ownAuction
+		}
+
+		  return res.status(200).json({user:userInfo})
+
 		} catch (e) {
 			console.log(e)
 			res.status(400).json({message: "Registration error"})

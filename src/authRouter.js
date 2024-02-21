@@ -21,6 +21,7 @@ var type = multer.single("img")
 // const upload=require('./middleware/multer')
 // const controlleraAuction=require('./Router/authAuction')
 //authorization
+router.post('/getuser',controllerLogin.getUser)
 router.post('/login', controllerLogin.login)
 router.post('/registration',controllerLogin.registration)
 router.post('/resendemail',controllerLogin.resendemail)
