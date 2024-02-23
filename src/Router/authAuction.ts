@@ -61,7 +61,8 @@ class authAuction {
 				active: true,
 				timeStart: currentDate,
 				listRates: [],
-				owner: id,
+				owner:user.email,
+				ownerId: id,
 			})
 			await auction.save()
 
@@ -146,7 +147,7 @@ class authAuction {
 	// }
 	async getAuction(req: Request, res: Response) {
 		try {
-			const auction = await Auction.find().limit(20)
+			const auction = await Auction.find()
 			res.status(200).json({
 				auction: auction,
 				message: "Auction created successfully",
