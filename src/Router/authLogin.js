@@ -8,7 +8,7 @@ const jwt = require("jsonwebtoken")
 // const forgotdata = require('../email');
 const Emailsend = require("../email")
 const {json} = require("express")
-const verifyToken=require('../middleware/verify')
+const verifyToken = require("../middleware/verify")
 const emailSender = new Emailsend()
 const generateAccessToken = (id) => {
 	const playold = {
@@ -22,15 +22,13 @@ class authController {
 			console.log("1")
 			const errors = validationResult(req)
 			if (!errors.isEmpty()) {
-				return res
-					.status(400)
-					.json({
-						message: "Error occurred during registration",
-						errors,
-					})
+				return res.status(400).json({
+					message: "Error occurred during registration",
+					errors,
+				})
 			}
 
-			const {email, password} = req.body
+			const {email, password, name} = req.body
 
 			const candidate = await User.findOne({email})
 			if (candidate) {
@@ -45,7 +43,7 @@ class authController {
 			const status = true
 			tempData.setTempData(
 				"registrationData",
-				{email, chaecknum, hashPassword, status},
+				{name, email, chaecknum, hashPassword, status},
 				30 * 60 * 1000
 			)
 
@@ -59,7 +57,7 @@ class authController {
 		try {
 			const savedData = tempData.getTempData("registrationData")
 			const email = savedData.email
-
+const name=savedData.name
 			const chaecknum = Math.floor(Math.random() * 8999) + 1000
 			console.log(chaecknum)
 			let status = false
@@ -71,6 +69,7 @@ class authController {
 			tempData.setTempData(
 				"registrationData",
 				{
+					name,
 					email,
 					chaecknum,
 					hashPassword: savedData.hashPassword,
@@ -92,7 +91,7 @@ class authController {
 					.status(400)
 					.json({message: "Registration data not found"})
 			}
-
+const name=savedData.name
 			const email = savedData.email
 			const chaecknum = savedData.chaecknum
 			let status = savedData.status
@@ -106,6 +105,7 @@ class authController {
 				tempData.setTempData(
 					"registrationData",
 					{
+						name,
 						email,
 						chaecknum,
 						hashPassword: savedData.hashPassword,
@@ -166,14 +166,15 @@ class authController {
 					.json({message: "Registration data not found"})
 			}
 
-			const {email, chaecknum, hashPassword, status} = savedData
+			const {name,email, chaecknum, hashPassword, status} = savedData
 			if (chaecknum == code) {
 				const user = new User({
+					name:name,
 					email: email,
 					password: hashPassword,
 					balance: 100,
-					bidAuction:[],
-	    ownAuction:[]
+					bidAuction: [],
+					ownAuction: [],
 				})
 				await user.save()
 				return res.status(200).json({
@@ -222,17 +223,16 @@ class authController {
 	}
 	async getUser(req, res) {
 		try {
-			const {token}= req.body
+			const {token} = req.body
 			const {user, id} = await verifyToken(token, res)
-  const userInfo={
-			email:user.email,
-			balance:user.balance,
-			bidAuction:user.bidAuction,
-			ownAuction:user.ownAuction
-		}
+			const userInfo = {
+				email: user.email,
+				balance: user.balance,
+				bidAuction: user.bidAuction,
+				ownAuction: user.ownAuction,
+			}
 
-		  return res.status(200).json({user:userInfo})
-
+			return res.status(200).json({user: userInfo})
 		} catch (e) {
 			console.log(e)
 			res.status(400).json({message: "Registration error"})

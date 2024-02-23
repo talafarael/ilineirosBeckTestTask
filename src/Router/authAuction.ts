@@ -147,7 +147,7 @@ class authAuction {
 	// }
 	async getAuction(req: Request, res: Response) {
 		try {
-			const auction = await Auction.find()
+			const auction = await Auction.find().limit(20)
 			res.status(200).json({
 				auction: auction,
 				message: "Auction created successfully",

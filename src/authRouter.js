@@ -34,7 +34,7 @@ router.post('/getauctionone',auctionController.getAuctionOne)
 router.post('/makebidauctionone',auctionController.makeBidAuctionOne)
 
 
-router.post('/createauction',type,auctionController.createAuction)
+router.post('/createauction',middlewareUser,type,auctionController.createAuction)
 
 
 
