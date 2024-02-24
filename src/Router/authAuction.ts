@@ -17,26 +17,26 @@ const bucket = storage.bucket("storageafarel")
 class authAuction {
 	async createAuction(req, res: Respons) {
 		try {
-			// if (!req.file) {
-			// 	return res.status(400).json({
-			// 		message: "Not all fields are filled in, please try again",
-			// 	})
-			// }
-			// if (req.file) {
-			// 	console.log("File found, trying to upload...")
+			if (!req.file) {
+				return res.status(400).json({
+					message: "Not all fields are filled in, please try again",
+				})
+			}
+			if (req.file) {
+				console.log("File found, trying to upload...")
 
-			// 	const blob = bucket.file(req.file.originalname)
-			// 	const blobStream = blob.createWriteStream()
+				const blob = bucket.file(req.file.originalname)
+				const blobStream = blob.createWriteStream()
 
-			// 	blobStream.on("finish", () => {
-			// 		console.log("Success")
-			// 	})
+				blobStream.on("finish", () => {
+					console.log("Success")
+				})
 
-			// 	blobStream.end(req.file.buffer)
-			// }
+				blobStream.end(req.file.buffer)
+			}
 
-			// const fileName = `https://storage.googleapis.com/storageafarel/${req.file.originalname}`
-			const fileName = ''
+			const fileName = `https://storage.googleapis.com/storageafarel/${req.file.originalname}`
+
 			const {title, minRates, endDate, desc, token} = req.body
 			if (!title || !minRates || !endDate || !desc || !token) {
     return res.status(400).json({ message: "All fields are required" });
