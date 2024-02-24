@@ -32,12 +32,13 @@ class authAuction {
 					console.log("Success")
 				})
 
-				blobStream.end(req.file.buffer)
+				blobStream.end(req.file.buffer)	
+				
+		
 			}
 	
-			
-			const	fileName = `https://storage.googleapis.com/storageafarel/${req.file.originalname}`
-		
+				const	fileName = `https://storage.googleapis.com/storageafarel/${req.file.originalname}`
+	
 			const {title, minRates, endDate, desc, token} = req.body
 
 			if (endDate == undefined) {
@@ -64,6 +65,11 @@ class authAuction {
 				owner:user.email,
 				ownerId: id,
 			})
+			user.ownAuction.push({
+    auction: auction._id
+});
+
+			user.save()
 			await auction.save()
 
 			res.status(200).json({
