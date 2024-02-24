@@ -33,10 +33,15 @@ class authController {
 			const candidate = await User.findOne({email})
 			if (candidate) {
 				return res.status(400).json({
+					message: "The user with this email already exists",
+				})
+			}
+			const checkName = await User.findOne({name: name})
+			if (checkName) {
+				return res.status(400).json({
 					message: "The user with this name already exists",
 				})
 			}
-			console.log("1")
 			const hashPassword = await bcrypt.hash(password, 7)
 			const chaecknum = Math.floor(Math.random() * 8999) + 1000
 			console.log(chaecknum)
@@ -56,8 +61,8 @@ class authController {
 	async resendemail(req, res) {
 		try {
 			const savedData = tempData.getTempData("registrationData")
-			const email = savedData.email
-const name=savedData.name
+			const {email, name} = savedData
+
 			const chaecknum = Math.floor(Math.random() * 8999) + 1000
 			console.log(chaecknum)
 			let status = false
@@ -91,9 +96,8 @@ const name=savedData.name
 					.status(400)
 					.json({message: "Registration data not found"})
 			}
-const name=savedData.name
-			const email = savedData.email
-			const chaecknum = savedData.chaecknum
+			const {name, email, chaecknum} = savedData
+
 			let status = savedData.status
 			if (status) {
 				await emailSender.sendmessage({
@@ -166,10 +170,11 @@ const name=savedData.name
 					.json({message: "Registration data not found"})
 			}
 
-			const {name,email, chaecknum, hashPassword, status} = savedData
+			const {name, email, chaecknum, hashPassword, status} = savedData
+			console.log(name)
 			if (chaecknum == code) {
 				const user = new User({
-					name:name,
+					name: name,
 					email: email,
 					password: hashPassword,
 					balance: 100,
@@ -200,7 +205,13 @@ const name=savedData.name
 	async login(req, res) {
 		try {
 			const {email, password} = req.body
-			const user = await User.findOne({email})
+			const isEmail = email.includes("@")
+			let user
+			if (isEmail) {
+				user = await User.findOne({email})
+			} else {
+				user = await User.findOne({name: email})
+			}
 			if (!user) {
 				return res.status(400).json({
 					message: "User with such name does not exist ",
