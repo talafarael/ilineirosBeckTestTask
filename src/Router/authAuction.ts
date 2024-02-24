@@ -38,7 +38,9 @@ class authAuction {
 			// const fileName = `https://storage.googleapis.com/storageafarel/${req.file.originalname}`
 			const fileName = ''
 			const {title, minRates, endDate, desc, token} = req.body
-
+			if (!title || !minRates || !endDate || !desc || !token) {
+    return res.status(400).json({ message: "All fields are required" });
+}
 			if (endDate == undefined) {
 				return res.status(400).json({
 					message: "Undefined variable 'timeLive' is not defined",
@@ -60,7 +62,7 @@ class authAuction {
 				active: true,
 				timeStart: currentDate,
 				listRates: [],
-				owner: user.email,
+				owner: user.name,
 				ownerId: id,
 			})
 			user.ownAuction.push(
