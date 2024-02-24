@@ -17,28 +17,26 @@ const bucket = storage.bucket("storageafarel")
 class authAuction {
 	async createAuction(req, res: Respons) {
 		try {
-			if (!req.file) {
-			return	res.status(400).json({
-					message:"Not all fields are filled in, please try again"
-				})
-			}
-			if (req.file) {
-				console.log("File found, trying to upload...")
+			// if (!req.file) {
+			// 	return res.status(400).json({
+			// 		message: "Not all fields are filled in, please try again",
+			// 	})
+			// }
+			// if (req.file) {
+			// 	console.log("File found, trying to upload...")
 
-				const blob = bucket.file(req.file.originalname)
-				const blobStream = blob.createWriteStream()
+			// 	const blob = bucket.file(req.file.originalname)
+			// 	const blobStream = blob.createWriteStream()
 
-				blobStream.on("finish", () => {
-					console.log("Success")
-				})
+			// 	blobStream.on("finish", () => {
+			// 		console.log("Success")
+			// 	})
 
-				blobStream.end(req.file.buffer)	
-				
-		
-			}
-	
-				const	fileName = `https://storage.googleapis.com/storageafarel/${req.file.originalname}`
-	
+			// 	blobStream.end(req.file.buffer)
+			// }
+
+			// const fileName = `https://storage.googleapis.com/storageafarel/${req.file.originalname}`
+			const fileName = ''
 			const {title, minRates, endDate, desc, token} = req.body
 
 			if (endDate == undefined) {
@@ -62,12 +60,12 @@ class authAuction {
 				active: true,
 				timeStart: currentDate,
 				listRates: [],
-				owner:user.email,
+				owner: user.email,
 				ownerId: id,
 			})
-			user.ownAuction.push({
-    auction: auction._id
-});
+			user.ownAuction.push(
+			 auction._id
+			)
 
 			user.save()
 			await auction.save()
@@ -212,6 +210,23 @@ class authAuction {
 			auction.save()
 			res.status(200).json({
 				auction: auction,
+				message: "",
+			})
+		} catch (e) {
+			console.log(e)
+			res.status(400).json({message: "Registration error"})
+		}
+	}
+	async getOwnAuction(req: Request, res: Response) {
+		try {
+			const {token}= req.body
+			const {user, id} = await verifyToken(token, res)
+			console.log(user)
+			const ownAuctionIds = user.ownAuction;
+			console.log(ownAuctionIds )
+			const auctions = await Auction.find({ _id: { $in: ownAuctionIds } });
+			res.status(200).json({
+				auction: auctions,
 				message: "",
 			})
 		} catch (e) {
