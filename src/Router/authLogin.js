@@ -226,6 +226,8 @@ class authController {
 			const token = generateAccessToken(user._id)
 			return res.status(200).json({
 				token: token,
+				balance:user.balance
+
 			})
 		} catch (e) {
 			console.log(e)
