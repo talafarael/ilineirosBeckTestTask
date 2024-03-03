@@ -165,10 +165,11 @@ class authAuction {
 	}
 	async getAuctionOne(req: Request, res: Response) {
 		try {
-			const {id} = req.body
+			const {_id,token} = req.body
+			const {user, id} = await verifyToken(token, res)
 			console.log(id)
 			console.log(req.body)
-			const auction = await Auction.findOne({_id: id})
+			const auction = await Auction.findOne({_id: _id})
 			res.status(200).json({
 				auction: auction,
 				message: "Auction created successfully",
