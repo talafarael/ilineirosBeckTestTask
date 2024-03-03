@@ -236,15 +236,15 @@ class authAuction {
 			res.status(400).json({message: "Registration error"})
 		}
 	}
-async	getInfoForChange(req: Request, res: Response) {
+async getInfoForChange(req: Request, res: Response) {
 		try {
 			const {token ,_id}=req.body
 			const {user, id} = await verifyToken(token, res)
-			const checkOwner=user.ownAuction.find((auction:string) => auction == _id)
+			const checkOwner=await user.ownAuction.find((auction:string) => auction == _id)
 			if(!checkOwner){
 			return	res.status(400).json({message: "your not owner"})
 			}
-			const auction=Auction.find({_id: {$in: _id}})
+			const auction=await Auction.find({_id: {$in: _id}})
 			if(auction.minRates!=auction.rates){
 				return	res.status(400).json({message: "auction have bid"})
 			}
@@ -252,14 +252,22 @@ async	getInfoForChange(req: Request, res: Response) {
 				auction: auction,
 				message: "",
 			})
-
-
-			
-
-		} catch (e) {
+        } catch (e) {
 			console.log(e)
 			res.status(400).json({message: "Registration error"})
 		}
 	}
+
+	async changeInfoForChange(req: Request, res: Response) {
+		try {
+			const {token ,_id}=req.body
+			const {user, id} = await verifyToken(token, res)
+			
+		}
+	 catch (e) {
+		console.log(e)
+		res.status(400).json({message: "Registration error"})
+	}}
+
 }
 module.exports = new authAuction()
