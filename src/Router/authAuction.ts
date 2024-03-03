@@ -39,8 +39,10 @@ class authAuction {
 
 			const {title, minRates, endDate, desc, token} = req.body
 			if (!title || !minRates || !endDate || !desc || !token) {
-    return res.status(400).json({ message: "All fields are required" });
-}
+				return res
+					.status(400)
+					.json({message: "All fields are required"})
+			}
 			if (endDate == undefined) {
 				return res.status(400).json({
 					message: "Undefined variable 'timeLive' is not defined",
@@ -65,9 +67,7 @@ class authAuction {
 				owner: user.name,
 				ownerId: id,
 			})
-			user.ownAuction.push(
-			 auction._id
-			)
+			user.ownAuction.push(auction._id)
 
 			user.save()
 			await auction.save()
@@ -221,16 +221,41 @@ class authAuction {
 	}
 	async getOwnAuction(req: Request, res: Response) {
 		try {
-			const {token}= req.body
+			const {token} = req.body
 			const {user, id} = await verifyToken(token, res)
 			console.log(user)
-			const ownAuctionIds = user.ownAuction;
-			console.log(ownAuctionIds )
-			const auctions = await Auction.find({ _id: { $in: ownAuctionIds } });
+			const ownAuctionIds = user.ownAuction
+			console.log(ownAuctionIds)
+			const auctions = await Auction.find({_id: {$in: ownAuctionIds}})
 			res.status(200).json({
 				auction: auctions,
 				message: "",
 			})
+		} catch (e) {
+			console.log(e)
+			res.status(400).json({message: "Registration error"})
+		}
+	}
+async	getInfoForChange(req: Request, res: Response) {
+		try {
+			const {token ,_id}=req.body
+			const {user, id} = await verifyToken(token, res)
+			const checkOwner=user.ownAuction.find((auction:string) => auction == _id)
+			if(!checkOwner){
+			return	res.status(400).json({message: "your not owner"})
+			}
+			const auction=Auction.find({_id: {$in: _id}})
+			if(auction.minRates!=auction.rates){
+				return	res.status(400).json({message: "auction have bid"})
+			}
+			return res.status(200).json({
+				auction: auction,
+				message: "",
+			})
+
+
+			
+
 		} catch (e) {
 			console.log(e)
 			res.status(400).json({message: "Registration error"})
