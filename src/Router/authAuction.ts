@@ -272,8 +272,38 @@ class authAuction {
 
 	async changeInfoForChange(req: Request, res: Response) {
 		try {
-			const {token, _id} = req.body
+			const {token, _id, title,minRates , endDate	, desct} = req.body
+		
 			const {user, id} = await verifyToken(token, res)
+			const checkOwner = await user.ownAuction.find(
+				(auction: string) => auction == _id
+			)
+			if (!checkOwner) {
+				return res.status(400).json({message: "your not owner"})
+			}
+			const auction = await Auction.find({_id: {$in: _id}})
+			if (auction.minRates != auction.rates) {
+				return res.status(400).json({message: "auction have bid"})
+			}
+			
+			verifyTime()
+			if(title){
+				auction[0].title=title
+			}
+			if(minRates){
+				auction[0].minRates=minRates
+			}
+			if(endDate){
+				auction[0].endDate=endDate
+			}
+			if(desct){
+				auction[0].desct= desct
+			}
+			console.log(auction)
+		 await	auction[0].save()
+			return res.status(200).json({
+				auction
+			})
 		} catch (e) {
 			console.log(e)
 			res.status(400).json({message: "Registration error"})
