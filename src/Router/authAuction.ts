@@ -5,7 +5,7 @@ const User = require("../model/user")
 const verifyToken = require("../middleware/verify")
 import express, {Request, Response} from "express"
 const {Storage} = require("@google-cloud/storage")
-
+const verifyTime
 const projectId = "commanding-ring-409619" // Get this from Google Cloud
 const keyFilename = "mykey.json"
 
@@ -167,10 +167,15 @@ class authAuction {
 		try {
 			const {_id,token} = req.body
 			const {user, id} = await verifyToken(token, res)
-			console.log(id)
-			console.log(req.body)
+			
+			let stateOwner=false
 			const auction = await Auction.findOne({_id: _id})
+			if(auction.owner==user.name){
+				stateOwner=true
+			}
+
 			res.status(200).json({
+				stateOwner:stateOwner,
 				auction: auction,
 				message: "Auction created successfully",
 			})
@@ -249,6 +254,7 @@ async getInfoForChange(req: Request, res: Response) {
 			if(auction.minRates!=auction.rates){
 				return	res.status(400).json({message: "auction have bid"})
 			}
+			verifyTime()
 			return res.status(200).json({
 				auction: auction,
 				message: "",
@@ -271,4 +277,5 @@ async getInfoForChange(req: Request, res: Response) {
 	}}
 
 }
+
 module.exports = new authAuction()

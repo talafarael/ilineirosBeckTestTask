@@ -1,9 +1,10 @@
+import { models } from "mongoose";
 
 
 
 
 
-async function verifyToken(timeEnd: string, res: any) {
+async function verifyTime(timeEnd: string, res: any) {
     var currentDate = new Date()
    const endTime= new Date(timeEnd)
    if(endTime<currentDate){
@@ -12,3 +13,5 @@ res.status(400).json({
 });
    }
 }
+
+module.exports =verifyTime
