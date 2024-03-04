@@ -291,6 +291,7 @@ class authAuction {
 				auction[0].title=title
 			}
 			if(minRates){
+				auction[0].rates=minRates
 				auction[0].minRates=minRates
 			}
 			if(endDate){
