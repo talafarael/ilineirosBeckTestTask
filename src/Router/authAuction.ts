@@ -5,7 +5,7 @@ const User = require("../model/user")
 const verifyToken = require("../middleware/verify")
 import express, {Request, Response} from "express"
 const {Storage} = require("@google-cloud/storage")
-const verifyTime
+const verifyTime=require('../middleware/timeMiddleware')
 const projectId = "commanding-ring-409619" // Get this from Google Cloud
 const keyFilename = "mykey.json"
 
