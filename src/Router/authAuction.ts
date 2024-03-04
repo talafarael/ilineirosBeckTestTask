@@ -5,7 +5,7 @@ const User = require("../model/user")
 const verifyToken = require("../middleware/verify")
 import express, {Request, Response} from "express"
 const {Storage} = require("@google-cloud/storage")
-const verifyTime=require('../middleware/timeMiddleware')
+const verifyTime = require("../middleware/timeMiddleware")
 const projectId = "commanding-ring-409619" // Get this from Google Cloud
 const keyFilename = "mykey.json"
 
@@ -165,17 +165,17 @@ class authAuction {
 	}
 	async getAuctionOne(req: Request, res: Response) {
 		try {
-			const {_id,token} = req.body
+			const {_id, token} = req.body
 			const {user, id} = await verifyToken(token, res)
-			
-			let stateOwner=false
+
+			let stateOwner = false
 			const auction = await Auction.findOne({_id: _id})
-			if(auction.owner==user.name){
-				stateOwner=true
+			if (auction.owner == user.name) {
+				stateOwner = true
 			}
 
 			res.status(200).json({
-				stateOwner:stateOwner,
+				stateOwner: stateOwner,
 				auction: auction,
 				message: "Auction created successfully",
 			})
@@ -242,24 +242,29 @@ class authAuction {
 			res.status(400).json({message: "Registration error"})
 		}
 	}
-async getInfoForChange(req: Request, res: Response) {
+	async getInfoForChange(req: Request, res: Response) {
 		try {
-			const {token ,_id}=req.body
+			const {token, _id} = req.body
 			const {user, id} = await verifyToken(token, res)
-			const checkOwner=await user.ownAuction.find((auction:string) => auction == _id)
-			if(!checkOwner){
-			return	res.status(400).json({message: "your not owner"})
+			const checkOwner = await user.ownAuction.find(
+				(auction: string) => auction == _id
+			)
+			if (!checkOwner) {
+				return res.status(400).json({message: "your not owner"})
 			}
-			const auction=await Auction.find({_id: {$in: _id}})
-			if(auction.minRates!=auction.rates){
-				return	res.status(400).json({message: "auction have bid"})
+			const auction = await Auction.find({_id: {$in: _id}})
+			if (auction.minRates != auction.rates) {
+				return res.status(400).json({message: "auction have bid"})
 			}
 			verifyTime()
 			return res.status(200).json({
-				auction: auction,
-				message: "",
+				title: auction.title,
+				minRates: auction.minRates,
+				endDate: auction.endDate,
+				desc: auction.dec,
+     message: "",
 			})
-        } catch (e) {
+		} catch (e) {
 			console.log(e)
 			res.status(400).json({message: "Registration error"})
 		}
@@ -267,15 +272,13 @@ async getInfoForChange(req: Request, res: Response) {
 
 	async changeInfoForChange(req: Request, res: Response) {
 		try {
-			const {token ,_id}=req.body
+			const {token, _id} = req.body
 			const {user, id} = await verifyToken(token, res)
-			
+		} catch (e) {
+			console.log(e)
+			res.status(400).json({message: "Registration error"})
 		}
-	 catch (e) {
-		console.log(e)
-		res.status(400).json({message: "Registration error"})
-	}}
-
+	}
 }
 
 module.exports = new authAuction()
