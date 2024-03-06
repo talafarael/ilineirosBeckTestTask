@@ -234,7 +234,8 @@ class authAuction {
 			console.log(ownAuctionIds)
 			const auctions = await Auction.find({_id: {$in: ownAuctionIds}})
 			res.status(200).json({
-				auction: auctions,
+				id: auctions._id,
+				title:auctions.title,
 				message: "",
 			})
 		} catch (e) {
