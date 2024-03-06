@@ -225,7 +225,7 @@ class authAuction {
 			res.status(400).json({message: "Registration error"})
 		}
 	}
-	async getOwnAuction(req: Request, res: Response) {
+	async getOwnAuctions(req: Request, res: Response) {
 		try {
 			const {token} = req.body
 			const {user, id} = await verifyToken(token, res)
