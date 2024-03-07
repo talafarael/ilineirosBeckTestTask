@@ -272,7 +272,7 @@ class authAuction {
 	
 	async changeInfoForChange(req: Request, res: Response) {
 		try {
-			const {token, _id, title,minRates , endDate	, desct} = req.body
+			const {token, _id, title,minRates ,timeEnd	, desct} = req.body
 		
 			const {user, id} = await verifyToken(token, res)
 			console.log(user)
@@ -297,8 +297,8 @@ class authAuction {
 				auction[0].rates=minRates
 				auction[0].minRates=minRates
 			}
-			if(endDate){
-				auction[0].timeEnd=endDate
+			if(timeEnd){
+				auction[0].timeEnd=timeEnd
 			}
 			if(desct){
 				auction[0].desct= desct
