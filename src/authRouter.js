@@ -36,7 +36,7 @@ router.post('/makebidauctionone',auctionController.makeBidAuctionOne)
 router.post('/getownauctions',middlewareUser,auctionController.getOwnAuctions)
 router.post('/createauction',type,auctionController.createAuction)
 router.post('/getauctioninfoforchange',auctionController.getInfoForChange)
-router.post('/editfieldauction',auctionController.changeInfoForChange)
+router.post('/editfieldauction',middlewareUser,auctionController.changeInfoForChange)
 
 
 
