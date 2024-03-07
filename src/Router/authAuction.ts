@@ -275,7 +275,8 @@ class authAuction {
 			const {token, _id, title,minRates , endDate	, desct} = req.body
 		
 			const {user, id} = await verifyToken(token, res)
-			const checkOwner = await user.ownAuction.find(
+			const Owner = await user.ownAuction
+			const checkOwner =Owner.find(
 				(auction: string) => auction == _id
 			)
 			if (!checkOwner) {
