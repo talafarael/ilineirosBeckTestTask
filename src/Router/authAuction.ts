@@ -269,7 +269,7 @@ class authAuction {
 			res.status(400).json({message: "Registration error"})
 		}
 	}
-
+	
 	async changeInfoForChange(req: Request, res: Response) {
 		try {
 			const {token, _id, title,minRates , endDate	, desct} = req.body
@@ -286,7 +286,7 @@ class authAuction {
 				return res.status(400).json({message: "auction have bid"})
 			}
 			
-			verifyTime()
+			// verifyTime()
 			if(title){
 				auction[0].title=title
 			}
