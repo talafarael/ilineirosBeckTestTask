@@ -282,7 +282,7 @@ class authAuction {
 				(auction: string) => auction == _id
 			)
 			if (!checkOwner) {
-				return res.status(400).json({message: "your not owner"})
+				return res.status(400).json({message: "You are not owner"})
 			}
 			const auction = await Auction.find({_id: {$in: _id}})
 			if (auction.minRates != auction.rates) {
