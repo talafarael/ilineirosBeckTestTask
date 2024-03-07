@@ -298,7 +298,7 @@ class authAuction {
 				auction[0].minRates=minRates
 			}
 			if(endDate){
-				auction[0].endDate=endDate
+				auction[0].timeEnd=endDate
 			}
 			if(desct){
 				auction[0].desct= desct
