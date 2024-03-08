@@ -167,15 +167,17 @@ class authAuction {
 		try {
 			const {_id, token} = req.body
 			const {user, id} = await verifyToken(token, res)
-
+			
 			let stateOwner = false
 			const auction = await Auction.findOne({_id: _id})
 			if (auction.owner == user.name) {
 				stateOwner = true
 			}
-
+const active=await verifyTime( auction.timeEnd,res)
+console.log(active)
 			res.status(200).json({
 				stateOwner: stateOwner,
+				active:active,
 				auction: auction,
 				message: "Auction created successfully",
 			})
