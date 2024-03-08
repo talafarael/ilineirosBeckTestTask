@@ -57,10 +57,10 @@ class authAuction {
 				img: fileName,
 				title: title,
 				rates: minRates,
-			 desct: desc,
+				desct: desc,
 				minRates: minRates,
 				timeEnd: endDate,
-			
+				active: true,
 				timeStart: currentDate,
 				listRates: [],
 				owner: user.name,
@@ -166,27 +166,22 @@ class authAuction {
 		try {
 			const {_id, token} = req.body
 			const {user, id} = await verifyToken(token, res)
-			
+
 			let stateOwner = false
 			const auction = await Auction.findOne({_id: _id})
 			if (auction.owner == user.name) {
 				stateOwner = true
 			}
-const active=await verifyTime( auction.timeEnd,res)
-console.log(active)
+			const active = await verifyTime(auction.timeEnd, res)
+			console.log(active)
+			auction.active =active
+			auction.save()
 			res.status(200).json({
 				stateOwner: stateOwner,
-				active:active,
+		
 				auction: auction,
 				message: "Auction created successfully",
 			})
-		} catch (e) {
-			console.log(e)
-			res.status(400).json({message: "Registration error"})
-		}
-	}
-	async deleteAuctionOne(req: Request, res: Response) {
-		try {
 		} catch (e) {
 			console.log(e)
 			res.status(400).json({message: "Registration error"})
@@ -235,7 +230,7 @@ console.log(active)
 			console.log(ownAuctionIds)
 			const auctions = await Auction.find({_id: {$in: ownAuctionIds}})
 			res.status(200).json({
-				auctions:auctions,
+				auctions: auctions,
 				message: "",
 			})
 		} catch (e) {
@@ -263,25 +258,22 @@ console.log(active)
 				minRates: auction.minRates,
 				endDate: auction.endDate,
 				desc: auction.dec,
-     message: "",
+				message: "",
 			})
 		} catch (e) {
 			console.log(e)
 			res.status(400).json({message: "Registration error"})
 		}
 	}
-	
+
 	async changeInfoForChange(req: Request, res: Response) {
 		try {
-			const {token, _id, title,minRates ,timeEnd	, desct} = req.body
-		
+			const {token, _id, title, minRates, timeEnd, desct} = req.body
+
 			const {user, id} = await verifyToken(token, res)
-			console.log(user)
-			console.log(user.ownAuction)
+
 			const Owner = await user.ownAuction
-			const checkOwner =Owner.find(
-				(auction: string) => auction == _id
-			)
+			const checkOwner = Owner.find((auction: string) => auction == _id)
 			if (!checkOwner) {
 				return res.status(400).json({message: "You are not owner"})
 			}
@@ -289,31 +281,39 @@ console.log(active)
 			if (auction.minRates != auction.rates) {
 				return res.status(400).json({message: "auction have bid"})
 			}
-			
+
 			// verifyTime()
-			if(title){
-				auction[0].title=title
+			if (title) {
+				auction[0].title = title
 			}
-			if(minRates){
-				auction[0].rates=minRates
-				auction[0].minRates=minRates
+			if (minRates) {
+				auction[0].rates = minRates
+				auction[0].minRates = minRates
 			}
-			if(timeEnd){
-				auction[0].timeEnd=timeEnd
+			if (timeEnd) {
+				auction[0].timeEnd = timeEnd
 			}
-			if(desct){
-				auction[0].desct= desct
+			if (desct) {
+				auction[0].desct = desct
 			}
 			console.log(auction)
-		 await	auction[0].save()
+			await auction[0].save()
 			return res.status(200).json({
-				auction
+				auction,
 			})
 		} catch (e) {
 			console.log(e)
 			res.status(400).json({message: "Registration error"})
 		}
 	}
+	async deleteAuctionOne(req: Request, res: Response) {
+		try {
+		} catch (e) {
+			console.log(e)
+			res.status(400).json({message: "Registration error"})
+		}
+	}
+
 }
 
 module.exports = new authAuction()
