@@ -57,11 +57,10 @@ class authAuction {
 				img: fileName,
 				title: title,
 				rates: minRates,
-				state: false,
-				desct: desc,
+			 desct: desc,
 				minRates: minRates,
 				timeEnd: endDate,
-				active: true,
+			
 				timeStart: currentDate,
 				listRates: [],
 				owner: user.name,
