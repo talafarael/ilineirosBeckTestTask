@@ -8,7 +8,10 @@ const {Storage} = require("@google-cloud/storage")
 const verifyTime = require("../middleware/timeMiddleware")
 const projectId = "commanding-ring-409619" // Get this from Google Cloud
 const keyFilename = "mykey.json"
-
+type IAuction = {
+	timeEnd: string
+	active: boolean
+}
 const storage = new Storage({
 	projectId,
 	keyFilename,
@@ -174,11 +177,11 @@ class authAuction {
 			}
 			const active = await verifyTime(auction.timeEnd, res)
 			console.log(active)
-			auction.active =active
+			auction.active = active
 			auction.save()
 			res.status(200).json({
 				stateOwner: stateOwner,
-		
+
 				auction: auction,
 				message: "Auction created successfully",
 			})
@@ -221,6 +224,7 @@ class authAuction {
 			res.status(400).json({message: "Registration error"})
 		}
 	}
+
 	async getOwnAuctions(req: Request, res: Response) {
 		try {
 			const {token} = req.body
@@ -229,6 +233,15 @@ class authAuction {
 			const ownAuctionIds = user.ownAuction
 			console.log(ownAuctionIds)
 			const auctions = await Auction.find({_id: {$in: ownAuctionIds}})
+
+			const updates = auctions.map(async(element: IAuction) => {
+				const active = await verifyTime(element.timeEnd, res)
+				element.active = active
+				return element.save() 
+			})
+
+			
+			await Promise.all(updates)
 			res.status(200).json({
 				auctions: auctions,
 				message: "",
@@ -252,7 +265,7 @@ class authAuction {
 			if (auction.minRates != auction.rates) {
 				return res.status(400).json({message: "auction have bid"})
 			}
-			verifyTime()
+
 			return res.status(200).json({
 				title: auction.title,
 				minRates: auction.minRates,
@@ -313,7 +326,6 @@ class authAuction {
 			res.status(400).json({message: "Registration error"})
 		}
 	}
-
 }
 
 module.exports = new authAuction()
