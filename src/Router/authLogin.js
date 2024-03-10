@@ -10,16 +10,46 @@ const Emailsend = require("../email")
 const {json} = require("express")
 const verifyToken = require("../middleware/verify")
 const emailSender = new Emailsend()
+const {Storage} = require("@google-cloud/storage")
+const projectId = "commanding-ring-409619" // Get this from Google Cloud
+const keyFilename = "mykey.json"
 const generateAccessToken = (id) => {
 	const playold = {
 		id,
 	}
 	return jwt.sign(playold, secret, {expiresIn: "24h"})
 }
+
+const storage = new Storage({
+	projectId,
+	keyFilename,
+})
+const bucket = storage.bucket("storageafarel")
 class authController {
 	async registration(req, res) {
 		try {
-			console.log("1")
+			let fileName
+			if (!req.file) {
+				return res.status(400).json({
+					message: "Not all fields are filled in, please try again",
+				})
+			}
+			if (req.file) {
+				console.log("File found, trying to upload...")
+
+				const blob = bucket.file(req.file.originalname)
+				const blobStream = blob.createWriteStream()
+
+				blobStream.on("finish", () => {
+					console.log("Success")
+				})
+
+				blobStream.end(req.file.buffer)
+			}
+			if(req.file.originalname){
+				 fileName = `https://storage.googleapis.com/storageafarel/${req.file.originalname}`
+			}
+			console.log(fileName)
 			const errors = validationResult(req)
 			if (!errors.isEmpty()) {
 				return res.status(400).json({
@@ -48,7 +78,13 @@ class authController {
 			const status = true
 			tempData.setTempData(
 				"registrationData",
-				{name, email, chaecknum, hashPassword, status},
+				{
+					fileName,
+					name, 
+					email,
+					 chaecknum,
+					  hashPassword, 
+					  status},
 				30 * 60 * 1000
 			)
 
@@ -103,6 +139,7 @@ return res
 			tempData.setTempData(
 				"registrationData",
 				{
+					fileName: savedData.fileName,
 					name,
 					email,
 					chaecknum,
@@ -125,7 +162,7 @@ return res
 					.status(400)
 					.json({message: "Registration data not found"})
 			}
-			const {name, email, chaecknum} = savedData
+			const {name, email, chaecknum,fileName} = savedData
 
 			let status = savedData.status
 			if (status) {
@@ -138,6 +175,7 @@ return res
 				tempData.setTempData(
 					"registrationData",
 					{
+						fileName,
 						name,
 						email,
 						chaecknum,
@@ -199,10 +237,11 @@ return res
 					.json({message: "Registration data not found"})
 			}
 
-			const {name, email, chaecknum, hashPassword, status} = savedData
+			const {name, email, chaecknum, hashPassword, status,fileName} = savedData
 			console.log(name)
 			if (chaecknum == code) {
 				const user = new User({
+					img:fileName,
 					name: name,
 					email: email,
 					password: hashPassword,
