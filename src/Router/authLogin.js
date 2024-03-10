@@ -58,6 +58,35 @@ class authController {
 			res.status(400).json({message: "Registration error"})
 		}
 	}
+
+	async validateToken(req,res){
+		try {
+			const {token}=req.body
+			if (!token) {
+return res
+.status(403)
+.json({message: "Пользователь не авторизован"})
+}
+			const decodedData = await jwt.verify(token, secret) 
+			if(!decodedData ){
+				return res.status(400).json({
+					message: "Is not valid token",
+	});
+			}
+			const id = decodedData.id;
+			const user = await User.findById(id.trim());
+			if (!user) {
+							return res.status(400).json({
+											message: "The user with this name does not exist",
+							});
+			}
+			return res.status(200).json({message: "valid good"})
+} catch (error) {
+			return res.status(401).json({
+							message: "Invalid token",
+			});
+}
+	}
 	async resendemail(req, res) {
 		try {
 			const savedData = tempData.getTempData("registrationData")

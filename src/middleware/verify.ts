@@ -5,6 +5,11 @@ const User = require("../model/user");
 
 async function verifyToken(token: string, res: any) {
     try {
+        if (!token) {
+			return res
+				.status(403)
+				.json({message: "Пользователь не авторизован"})
+		}
         const decodedData = await jwt.verify(token, secret) as JwtPayload;
         const id = decodedData.id;
         const user = await User.findById(id.trim());

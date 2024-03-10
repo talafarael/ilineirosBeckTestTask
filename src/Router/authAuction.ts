@@ -8,10 +8,7 @@ const {Storage} = require("@google-cloud/storage")
 const verifyTime = require("../middleware/timeMiddleware")
 const projectId = "commanding-ring-409619" // Get this from Google Cloud
 const keyFilename = "mykey.json"
-type IAuction = {
-	timeEnd: string
-	active: boolean
-}
+
 const storage = new Storage({
 	projectId,
 	keyFilename,
@@ -234,7 +231,7 @@ class authAuction {
 			console.log(ownAuctionIds)
 			const auctions = await Auction.find({_id: {$in: ownAuctionIds}})
 
-			const updates = auctions.map(async(element: IAuction) => {
+			const updates = auctions.map(async(element:any) => {
 				const active = await verifyTime(element.timeEnd, res)
 				element.active = active
 				return element.save() 
