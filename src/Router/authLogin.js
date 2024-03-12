@@ -46,6 +46,10 @@ class authController {
 			blobStream.end(req.file.buffer)
 		
 		const fileName = `https://storage.googleapis.com/storageafarel/${req.file.originalname}`
+
+		const {user, id} = await verifyToken(token, res)
+		user.img=fileName
+		await user.save()
 	} catch (e) {
 		console.error(e)
 		res.status(400).json({message: "Registration error"})
