@@ -26,30 +26,40 @@ const storage = new Storage({
 })
 const bucket = storage.bucket("storageafarel")
 class authController {
-	async registration(req, res) {
+	async editprofileimage(req, res) {
 		try {
-			let fileName
 			if (!req.file) {
 				return res.status(400).json({
 					message: "Not all fields are filled in, please try again",
 				})
 			}
-			if (req.file) {
-				console.log("File found, trying to upload...")
+			const {token} = req.body
+			console.log("File found, trying to upload...")
 
-				const blob = bucket.file(req.file.originalname)
-				const blobStream = blob.createWriteStream()
+			const blob = bucket.file(req.file.originalname)
+			const blobStream = blob.createWriteStream()
 
-				blobStream.on("finish", () => {
-					console.log("Success")
-				})
+			blobStream.on("finish", () => {
+				console.log("Success")
+			})
 
-				blobStream.end(req.file.buffer)
-			}
-			if(req.file.originalname){
-				 fileName = `https://storage.googleapis.com/storageafarel/${req.file.originalname}`
-			}
-			console.log(fileName)
+			blobStream.end(req.file.buffer)
+
+			const fileName = `https://storage.googleapis.com/storageafarel/${req.file.originalname}`
+
+			const {user, id} = await verifyToken(token, res)
+			user.img = fileName
+
+			await user.save()
+			return res.status(200).json({message: "regis good"})
+		} catch (e) {
+			console.error(e)
+			res.status(400).json({message: "Registration error"})
+		}
+	}
+	async registration(req, res) {
+		try {
+
 			const errors = validationResult(req)
 			if (!errors.isEmpty()) {
 				return res.status(400).json({
@@ -79,7 +89,7 @@ class authController {
 			tempData.setTempData(
 				"registrationData",
 				{
-					fileName,
+					
 					name, 
 					email,
 					 chaecknum,
@@ -95,33 +105,33 @@ class authController {
 		}
 	}
 
-	async validateToken(req,res){
+	async validateToken(req, res) {
 		try {
-			const {token}=req.body
+			const {token} = req.body
 			if (!token) {
-return res
-.status(403)
-.json({message: "Пользователь не авторизован"})
-}
-			const decodedData = await jwt.verify(token, secret) 
-			if(!decodedData ){
+				return res
+					.status(403)
+					.json({message: "Пользователь не авторизован"})
+			}
+			const decodedData = await jwt.verify(token, secret)
+			if (!decodedData) {
 				return res.status(400).json({
 					message: "Is not valid token",
-	});
+				})
 			}
-			const id = decodedData.id;
-			const user = await User.findById(id.trim());
+			const id = decodedData.id
+			const user = await User.findById(id.trim())
 			if (!user) {
-							return res.status(400).json({
-											message: "The user with this name does not exist",
-							});
+				return res.status(400).json({
+					message: "The user with this name does not exist",
+				})
 			}
 			return res.status(200).json({message: "valid good"})
-} catch (error) {
+		} catch (error) {
 			return res.status(401).json({
-							message: "Invalid token",
-			});
-}
+				message: "Invalid token",
+			})
+		}
 	}
 	async resendemail(req, res) {
 		try {
@@ -139,7 +149,7 @@ return res
 			tempData.setTempData(
 				"registrationData",
 				{
-					fileName: savedData.fileName,
+					
 					name,
 					email,
 					chaecknum,
@@ -162,7 +172,7 @@ return res
 					.status(400)
 					.json({message: "Registration data not found"})
 			}
-			const {name, email, chaecknum,fileName} = savedData
+			const {name, email, chaecknum} = savedData
 
 			let status = savedData.status
 			if (status) {
@@ -175,7 +185,7 @@ return res
 				tempData.setTempData(
 					"registrationData",
 					{
-						fileName,
+				
 						name,
 						email,
 						chaecknum,
@@ -237,11 +247,11 @@ return res
 					.json({message: "Registration data not found"})
 			}
 
-			const {name, email, chaecknum, hashPassword, status,fileName} = savedData
+			const {name, email, chaecknum, hashPassword, status} = savedData
 			console.log(name)
 			if (chaecknum == code) {
 				const user = new User({
-					img:fileName,
+
 					name: name,
 					email: email,
 					password: hashPassword,
@@ -294,8 +304,7 @@ return res
 			const token = generateAccessToken(user._id)
 			return res.status(200).json({
 				token: token,
-				balance:user.balance
-
+				balance: user.balance,
 			})
 		} catch (e) {
 			console.log(e)
@@ -307,7 +316,7 @@ return res
 			const {token} = req.body
 			const {user, id} = await verifyToken(token, res)
 			const userInfo = {
-				name:user.name,
+				name: user.name,
 				email: user.email,
 				balance: user.balance,
 				bidAuction: user.bidAuction,

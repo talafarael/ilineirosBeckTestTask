@@ -6,6 +6,7 @@ const user = new Schema({
 	password: {type: String, required: true},
 	balance:{type:Number},
 	bidAuction:{type:[]},
-	ownAuction:{type:[]}
+	ownAuction:{type:[]},
+	img:{type:String}
 })
 module.exports= model("User", user)
