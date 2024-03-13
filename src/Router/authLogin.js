@@ -59,6 +59,7 @@ class authController {
 	}
 	async registration(req, res) {
 		try {
+
 			const errors = validationResult(req)
 			if (!errors.isEmpty()) {
 				return res.status(400).json({
@@ -87,7 +88,13 @@ class authController {
 			const status = true
 			tempData.setTempData(
 				"registrationData",
-				{name, email, chaecknum, hashPassword, status},
+				{
+					
+					name, 
+					email,
+					 chaecknum,
+					  hashPassword, 
+					  status},
 				30 * 60 * 1000
 			)
 
@@ -142,6 +149,7 @@ class authController {
 			tempData.setTempData(
 				"registrationData",
 				{
+					
 					name,
 					email,
 					chaecknum,
@@ -177,6 +185,7 @@ class authController {
 				tempData.setTempData(
 					"registrationData",
 					{
+				
 						name,
 						email,
 						chaecknum,
@@ -242,7 +251,7 @@ class authController {
 			console.log(name)
 			if (chaecknum == code) {
 				const user = new User({
-					img: "",
+
 					name: name,
 					email: email,
 					password: hashPassword,

@@ -23,7 +23,7 @@ var type = multer.single("img")
 //authorization
 router.post('/getuser',middlewareUser,controllerLogin.getUser)
 router.post('/login', controllerLogin.login)
-router.post('/registration',controllerLogin.registration)
+router.post('/registration',type,controllerLogin.registration)
 router.post('/resendemail',controllerLogin.resendemail)
 router.post('/registercreate',controllerLogin.registerCreate)
 router.get('/sendemail',controllerLogin.SendEmail)
