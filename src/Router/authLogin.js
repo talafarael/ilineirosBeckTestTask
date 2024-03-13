@@ -26,14 +26,14 @@ const storage = new Storage({
 })
 const bucket = storage.bucket("storageafarel")
 class authController {
-	async editprofileimage(req){
-		try{
-		if (!req.file) {
-			return res.status(400).json({
-				message: "Not all fields are filled in, please try again",
-			})
-		}
-		const{ token }=req.body
+	async editprofileimage(req, res) {
+		try {
+			if (!req.file) {
+				return res.status(400).json({
+					message: "Not all fields are filled in, please try again",
+				})
+			}
+			const {token} = req.body
 			console.log("File found, trying to upload...")
 
 			const blob = bucket.file(req.file.originalname)
@@ -44,20 +44,21 @@ class authController {
 			})
 
 			blobStream.end(req.file.buffer)
-		
-		const fileName = `https://storage.googleapis.com/storageafarel/${req.file.originalname}`
 
-		const {user, id} = await verifyToken(token, res)
-		user.img=fileName
-		await user.save()
-	} catch (e) {
-		console.error(e)
-		res.status(400).json({message: "Registration error"})
-	}
+			const fileName = `https://storage.googleapis.com/storageafarel/${req.file.originalname}`
+
+			const {user, id} = await verifyToken(token, res)
+			user.img = fileName
+
+			await user.save()
+			return res.status(200).json({message: "regis good"})
+		} catch (e) {
+			console.error(e)
+			res.status(400).json({message: "Registration error"})
+		}
 	}
 	async registration(req, res) {
 		try {
-		
 			const errors = validationResult(req)
 			if (!errors.isEmpty()) {
 				return res.status(400).json({
@@ -97,33 +98,33 @@ class authController {
 		}
 	}
 
-	async validateToken(req,res){
+	async validateToken(req, res) {
 		try {
-			const {token}=req.body
+			const {token} = req.body
 			if (!token) {
-return res
-.status(403)
-.json({message: "Пользователь не авторизован"})
-}
-			const decodedData = await jwt.verify(token, secret) 
-			if(!decodedData ){
+				return res
+					.status(403)
+					.json({message: "Пользователь не авторизован"})
+			}
+			const decodedData = await jwt.verify(token, secret)
+			if (!decodedData) {
 				return res.status(400).json({
 					message: "Is not valid token",
-	});
+				})
 			}
-			const id = decodedData.id;
-			const user = await User.findById(id.trim());
+			const id = decodedData.id
+			const user = await User.findById(id.trim())
 			if (!user) {
-							return res.status(400).json({
-											message: "The user with this name does not exist",
-							});
+				return res.status(400).json({
+					message: "The user with this name does not exist",
+				})
 			}
 			return res.status(200).json({message: "valid good"})
-} catch (error) {
+		} catch (error) {
 			return res.status(401).json({
-							message: "Invalid token",
-			});
-}
+				message: "Invalid token",
+			})
+		}
 	}
 	async resendemail(req, res) {
 		try {
@@ -241,7 +242,7 @@ return res
 			console.log(name)
 			if (chaecknum == code) {
 				const user = new User({
-					img:'',
+					img: "",
 					name: name,
 					email: email,
 					password: hashPassword,
@@ -294,8 +295,7 @@ return res
 			const token = generateAccessToken(user._id)
 			return res.status(200).json({
 				token: token,
-				balance:user.balance
-
+				balance: user.balance,
 			})
 		} catch (e) {
 			console.log(e)
@@ -307,7 +307,7 @@ return res
 			const {token} = req.body
 			const {user, id} = await verifyToken(token, res)
 			const userInfo = {
-				name:user.name,
+				name: user.name,
 				email: user.email,
 				balance: user.balance,
 				bidAuction: user.bidAuction,
