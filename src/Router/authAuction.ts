@@ -19,7 +19,7 @@ const storage = new Storage({
 })
 const bucket = storage.bucket("storageafarel")
 class authAuction {
-	async createAuction(req, res: Respons) {
+	async createAuction(req, res: Response) {
 		try {
 			const file = req.file
 			console.log(file)
@@ -27,7 +27,7 @@ class authAuction {
 	
 			const result = await uploadFile(file)
 			await unlinkFile(file.path)
-			const fileName = `https://storage.googleapis.com/storageafarel/${req.file.originalname}`
+			const fileName = `https://faralaer.s3.eu-west-2.amazonaws.com/${file}`
 
 			const {title, minRates, endDate, desc, token} = req.body
 			if (!title || !minRates || !endDate || !desc || !token) {

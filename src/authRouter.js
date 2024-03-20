@@ -11,14 +11,14 @@ const Auction = require("./model/Auction")
 // const keyFilename = "mykey.json" 
 const multer = require('multer')
 const upload = multer({ dest: 'uploads/' })
-const multer = Multer({
-	storage: Multer.memoryStorage(),
-	limits: {
-			fileSize: 5 * 1024 * 1024, // No larger than 5mb, change as you need
-	},
-});
+// const multer = Multer({
+// 	storage: Multer.memoryStorage(),
+// 	limits: {
+// 			fileSize: 5 * 1024 * 1024, // No larger than 5mb, change as you need
+// 	},
+// });
 
-var type = multer.single("img")
+// var type = multer.single("img")
 // const upload=require('./middleware/multer')
 // const controlleraAuction=require('./Router/authAuction')
 //authorization
@@ -28,7 +28,7 @@ router.post('/registration',controllerLogin.registration)
 router.post('/resendemail',controllerLogin.resendemail)
 router.post('/registercreate',controllerLogin.registerCreate)
 router.get('/sendemail',controllerLogin.SendEmail)
-router.post('/editprofileimage',type,controllerLogin.editprofileimage)
+router.post('/editprofileimage',controllerLogin.editprofileimage)
 router.post('/validatetoken',controllerLogin.validateToken)
 //aukction
 router.get('/getauction',auctionController.getAuction)
