@@ -30,7 +30,7 @@ const generateAccessToken = (id) => {
 class authController {
 	async editprofileimage(req, res) {
 		try {
-
+const {token}=req.body
 			await  uploadFile(req.file);
 		
 			const fileName = `https://faralaer.s3.eu-west-2.amazonaws.com/${req.file.originalname}`
