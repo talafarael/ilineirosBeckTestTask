@@ -9,9 +9,9 @@ const {Storage} = require("@google-cloud/storage")
 const verifyTime = require("../middleware/timeMiddleware")
 const projectId = "commanding-ring-409619" // Get this from Google Cloud
 const keyFilename = "mykey.json"
-const fs = require("fs")
-const util = require("util")
-const unlinkFile = util.promisify(fs.unlink)
+// const fs = require("fs")
+// const util = require("util")
+// const unlinkFile = util.promisify(fs.unlink)
 
 // const storage = new Storage({
 // 	projectId,
@@ -21,16 +21,31 @@ const unlinkFile = util.promisify(fs.unlink)
 class authAuction {
 	async createAuction(req, res: Response) {
 		try {
-			console.log('aaaaa')
-			const file = req.file
-			const result = await uploadFile(file)
-			await unlinkFile(file.path)
+
+			// const file = req.file
+			// const result = await uploadFile(file)
+			 		if (!req.file) {
+							return res.status(400).send("No file uploaded.")
+						}
+			
+					
+						console.log(req.file)
+						await  uploadFile(req.file);
+			// 			const blobStream = blob.createWriteStream();
+			
+			// 			blobStream.on("finish", () => {
+			// 					res.status(200).send("Success");
+			// 					console.log("Success");
+			// 			});
+			// 			blobStream.end(req.file.buffer);
+			
+			// 			const file = req.files[0]
+			// await unlinkFile(file.path)
 
 		
-			const files = req.file.path
-			const path = files.split("\\")
-			const fileName = `https://faralaer.s3.eu-west-2.amazonaws.com/${path[1]}`
-console.log(`https://faralaer.s3.eu-west-2.amazonaws.com/${path[1]}`)
+		
+			const fileName = `https://faralaer.s3.eu-west-2.amazonaws.com/${req.file.originalname}`
+
 			const {title, minRates, endDate, desc, token} = req.body
 			if (!title || !minRates || !endDate || !desc || !token) {
 				return res
