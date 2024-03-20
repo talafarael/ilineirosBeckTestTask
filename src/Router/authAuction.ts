@@ -4,10 +4,14 @@ const {secret} = require("../config")
 const User = require("../model/user")
 const verifyToken = require("../middleware/verify")
 import express, {Request, Response} from "express"
+import { uploadFile } from "../s3"
 const {Storage} = require("@google-cloud/storage")
 const verifyTime = require("../middleware/timeMiddleware")
 const projectId = "commanding-ring-409619" // Get this from Google Cloud
 const keyFilename = "mykey.json"
+const fs = require('fs')
+const util = require('util')
+const unlinkFile = util.promisify(fs.unlink)
 
 const storage = new Storage({
 	projectId,
@@ -17,24 +21,12 @@ const bucket = storage.bucket("storageafarel")
 class authAuction {
 	async createAuction(req, res: Respons) {
 		try {
-			if (!req.file) {
-				return res.status(400).json({
-					message: "Not all fields are filled in, please try again",
-				})
-			}
-			if (req.file) {
-				console.log("File found, trying to upload...")
-
-				const blob = bucket.file(req.file.originalname)
-				const blobStream = blob.createWriteStream()
-
-				blobStream.on("finish", () => {
-					console.log("Success")
-				})
-
-				blobStream.end(req.file.buffer)
-			}
-
+			const file = req.file
+			console.log(file)
+	
+	
+			const result = await uploadFile(file)
+			await unlinkFile(file.path)
 			const fileName = `https://storage.googleapis.com/storageafarel/${req.file.originalname}`
 
 			const {title, minRates, endDate, desc, token} = req.body

@@ -9,7 +9,8 @@ const verifyToken = require("./middleware/verify")
 const Auction = require("./model/Auction")
 // const projectId = "commanding-ring-409619" // Get this from Google Cloud
 // const keyFilename = "mykey.json" 
-
+const multer = require('multer')
+const upload = multer({ dest: 'uploads/' })
 const multer = Multer({
 	storage: Multer.memoryStorage(),
 	limits: {
@@ -23,7 +24,7 @@ var type = multer.single("img")
 //authorization
 router.post('/getuser',middlewareUser,controllerLogin.getUser)
 router.post('/login', controllerLogin.login)
-router.post('/registration',type,controllerLogin.registration)
+router.post('/registration',controllerLogin.registration)
 router.post('/resendemail',controllerLogin.resendemail)
 router.post('/registercreate',controllerLogin.registerCreate)
 router.get('/sendemail',controllerLogin.SendEmail)
@@ -36,7 +37,7 @@ router.post('/getauctionone',auctionController.getAuctionOne)
 router.post('/makebidauctionone',auctionController.makeBidAuctionOne)
 
 router.post('/getownauctions',middlewareUser,auctionController.getOwnAuctions)
-router.post('/createauction',type,auctionController.createAuction)
+router.post('/createauction',upload.single('img'),auctionController.createAuction)
 router.post('/getauctioninfoforchange',auctionController.getInfoForChange)
 router.post('/editfieldauction',middlewareUser,auctionController.changeInfoForChange)
 
