@@ -21,9 +21,7 @@ const generateAccessToken = (id) => {
 	}
 	return jwt.sign(playold, secret, {expiresIn: "24h"})
 }
-const fs = require("fs")
-const util = require("util")
-const unlinkFile = util.promisify(fs.unlink)
+
 // const storage = new Storage({
 // 	projectId,
 // 	keyFilename,
@@ -32,13 +30,11 @@ const unlinkFile = util.promisify(fs.unlink)
 class authController {
 	async editprofileimage(req, res) {
 		try {
-			const file = req.file
-			const result = await uploadFile(file)
-			await unlinkFile(file.path)
 
-			const files = req.file.path
-			const path = files.split("\\")
-			const fileName = `https://faralaer.s3.eu-west-2.amazonaws.com/${path[1]}`
+			await  uploadFile(req.file);
+		
+			const fileName = `https://faralaer.s3.eu-west-2.amazonaws.com/${req.file.originalname}`
+
 			const {user, id} = await verifyToken(token, res)
 			user.img = fileName
 
