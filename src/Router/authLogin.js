@@ -20,11 +20,11 @@ const generateAccessToken = (id) => {
 	return jwt.sign(playold, secret, {expiresIn: "24h"})
 }
 
-const storage = new Storage({
-	projectId,
-	keyFilename,
-})
-const bucket = storage.bucket("storageafarel")
+// const storage = new Storage({
+// 	projectId,
+// 	keyFilename,
+// })
+// const bucket = storage.bucket("storageafarel")
 class authController {
 	async editprofileimage(req, res) {
 		try {
