@@ -1,3 +1,5 @@
+import {uploadFile} from "../s3"
+
 const bcrypt = require("bcryptjs")
 const {validationResult} = require("express-validator")
 const User = require("../model/user")
@@ -19,7 +21,9 @@ const generateAccessToken = (id) => {
 	}
 	return jwt.sign(playold, secret, {expiresIn: "24h"})
 }
-
+const fs = require("fs")
+const util = require("util")
+const unlinkFile = util.promisify(fs.unlink)
 // const storage = new Storage({
 // 	projectId,
 // 	keyFilename,
@@ -32,7 +36,6 @@ class authController {
 			const result = await uploadFile(file)
 			await unlinkFile(file.path)
 
-		
 			const files = req.file.path
 			const path = files.split("\\")
 			const fileName = `https://faralaer.s3.eu-west-2.amazonaws.com/${path[1]}`
@@ -48,7 +51,6 @@ class authController {
 	}
 	async registration(req, res) {
 		try {
-
 			const errors = validationResult(req)
 			if (!errors.isEmpty()) {
 				return res.status(400).json({
@@ -78,12 +80,12 @@ class authController {
 			tempData.setTempData(
 				"registrationData",
 				{
-					
-					name, 
+					name,
 					email,
-					 chaecknum,
-					  hashPassword, 
-					  status},
+					chaecknum,
+					hashPassword,
+					status,
+				},
 				30 * 60 * 1000
 			)
 
@@ -138,7 +140,6 @@ class authController {
 			tempData.setTempData(
 				"registrationData",
 				{
-					
 					name,
 					email,
 					chaecknum,
@@ -174,7 +175,6 @@ class authController {
 				tempData.setTempData(
 					"registrationData",
 					{
-				
 						name,
 						email,
 						chaecknum,
@@ -240,7 +240,6 @@ class authController {
 			console.log(name)
 			if (chaecknum == code) {
 				const user = new User({
-
 					name: name,
 					email: email,
 					password: hashPassword,
