@@ -28,25 +28,14 @@ const generateAccessToken = (id) => {
 class authController {
 	async editprofileimage(req, res) {
 		try {
-			if (!req.file) {
-				return res.status(400).json({
-					message: "Not all fields are filled in, please try again",
-				})
-			}
-			const {token} = req.body
-			console.log("File found, trying to upload...")
+			const file = req.file
+			const result = await uploadFile(file)
+			await unlinkFile(file.path)
 
-			const blob = bucket.file(req.file.originalname)
-			const blobStream = blob.createWriteStream()
-
-			blobStream.on("finish", () => {
-				console.log("Success")
-			})
-
-			blobStream.end(req.file.buffer)
-
-			const fileName = `https://storage.googleapis.com/storageafarel/${req.file.originalname}`
-
+		
+			const files = req.file.path
+			const path = files.split("\\")
+			const fileName = `https://faralaer.s3.eu-west-2.amazonaws.com/${path[1]}`
 			const {user, id} = await verifyToken(token, res)
 			user.img = fileName
 
