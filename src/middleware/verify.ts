@@ -10,7 +10,7 @@ async function verifyToken(token: string, res: any) {
 				.status(403)
 				.json({message: "Пользователь не авторизован"})
 		}
-        const decodedData = await jwt.verify(token, secret) as JwtPayload;
+        const decodedData = await jwt.verify(token, secret.secret) as JwtPayload;
         const id = decodedData.id;
         const user = await User.findById(id.trim());
         if (!user) {

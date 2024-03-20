@@ -4,13 +4,13 @@ const {secret} = require("../config")
 const User = require("../model/user")
 const verifyToken = require("../middleware/verify")
 import express, {Request, Response} from "express"
-import { uploadFile } from "../s3"
+import {uploadFile} from "../s3"
 const {Storage} = require("@google-cloud/storage")
 const verifyTime = require("../middleware/timeMiddleware")
 const projectId = "commanding-ring-409619" // Get this from Google Cloud
 const keyFilename = "mykey.json"
-const fs = require('fs')
-const util = require('util')
+const fs = require("fs")
+const util = require("util")
 const unlinkFile = util.promisify(fs.unlink)
 
 const storage = new Storage({
@@ -22,12 +22,12 @@ class authAuction {
 	async createAuction(req, res: Response) {
 		try {
 			const file = req.file
-			console.log(file)
-	
-	
 			const result = await uploadFile(file)
+
 			await unlinkFile(file.path)
-			const fileName = `https://faralaer.s3.eu-west-2.amazonaws.com/${file}`
+			const files = req.file.path
+			const path = files.split("\\")
+			const fileName = `https://faralaer.s3.eu-west-2.amazonaws.com/${path[1]}`
 
 			const {title, minRates, endDate, desc, token} = req.body
 			if (!title || !minRates || !endDate || !desc || !token) {
@@ -223,13 +223,12 @@ class authAuction {
 			console.log(ownAuctionIds)
 			const auctions = await Auction.find({_id: {$in: ownAuctionIds}})
 
-			const updates = auctions.map(async(element:any) => {
+			const updates = auctions.map(async (element: any) => {
 				const active = await verifyTime(element.timeEnd, res)
 				element.active = active
-				return element.save() 
+				return element.save()
 			})
 
-			
 			await Promise.all(updates)
 			res.status(200).json({
 				auctions: auctions,
