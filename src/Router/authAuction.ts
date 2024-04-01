@@ -5,10 +5,13 @@ const User = require("../model/user")
 const verifyToken = require("../middleware/verify")
 import express, {Request, Response} from "express"
 import {uploadFile, getFileStream} from "../s3"
+const checkUserOwner = require("../middleware/checkUserOwner")
 const {Storage} = require("@google-cloud/storage")
 const verifyTime = require("../middleware/timeMiddleware")
 const projectId = "commanding-ring-409619" // Get this from Google Cloud
 const keyFilename = "mykey.json"
+const generateAccessToken=require('../middleware/generateAccessToken')
+const passwordSendDelete=require('../passwordSendDelete')
 // const fs = require("fs")
 // const util = require("util")
 // const unlinkFile = util.promisify(fs.unlink)
@@ -21,29 +24,25 @@ const keyFilename = "mykey.json"
 class authAuction {
 	async createAuction(req, res: Response) {
 		try {
-
 			// const file = req.file
 			// const result = await uploadFile(file)
-			 		if (!req.file) {
-							return res.status(400).send("No file uploaded.")
-						}
-			
-					
-						console.log(req.file)
-						await  uploadFile(req.file);
+			if (!req.file) {
+				return res.status(400).send("No file uploaded.")
+			}
+
+			console.log(req.file)
+			await uploadFile(req.file)
 			// 			const blobStream = blob.createWriteStream();
-			
+
 			// 			blobStream.on("finish", () => {
 			// 					res.status(200).send("Success");
 			// 					console.log("Success");
 			// 			});
 			// 			blobStream.end(req.file.buffer);
-			
+
 			// 			const file = req.files[0]
 			// await unlinkFile(file.path)
 
-		
-		
 			const fileName = `https://faralaer.s3.eu-west-2.amazonaws.com/${req.file.originalname}`
 
 			const {title, minRates, endDate, desc, token} = req.body
@@ -61,7 +60,7 @@ class authAuction {
 			var currentDate = new Date()
 
 			const {user, id} = await verifyToken(token, res)
-console.log(user, id)
+			console.log(user, id)
 			const auction = new Auction({
 				img: fileName,
 				title: title,
@@ -326,6 +325,16 @@ console.log(user, id)
 	}
 	async deleteAuctionOne(req: Request, res: Response) {
 		try {
+			const {token, _id} = req.body
+			const {user, id} = await verifyToken(token, res)
+		const {checkOwner}=checkUserOwner(res,user,_id)
+		const passwordUser = Math.floor(Math.random() * 8999) + 1000
+		await passwordSendDelete.sendmessage({
+			emailUser: user.email,
+			password:  passwordUser.toString(),
+		})
+		generateAccessToken(passwordUser)
+
 		} catch (e) {
 			console.log(e)
 			res.status(400).json({message: "Registration error"})
