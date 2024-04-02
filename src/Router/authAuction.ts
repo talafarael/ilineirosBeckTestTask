@@ -5,17 +5,20 @@ const User = require("../model/user")
 const verifyToken = require("../middleware/verify")
 import express, {Request, Response} from "express"
 import {uploadFile, getFileStream} from "../s3"
+const AuctionDelete = require("../model/Delet")
 const checkUserOwner = require("../middleware/checkUserOwner")
 const {Storage} = require("@google-cloud/storage")
 const verifyTime = require("../middleware/timeMiddleware")
 const projectId = "commanding-ring-409619" // Get this from Google Cloud
 const keyFilename = "mykey.json"
-const generateAccessToken=require('../middleware/generateAccessToken')
-const passwordSendDelete=require('../passwordSendDelete')
+const bcrypt = require("bcryptjs")
+
+const generateAccessToken = require("../middleware/generateAccessToken")
+const PasswordSendDelete = require("../passwordSendDelete")
 // const fs = require("fs")
 // const util = require("util")
 // const unlinkFile = util.promisify(fs.unlink)
-
+const passwordSendDelete = new PasswordSendDelete()
 // const storage = new Storage({
 // 	projectId,
 // 	keyFilename,
@@ -323,18 +326,44 @@ class authAuction {
 			res.status(400).json({message: "Registration error"})
 		}
 	}
-	async deleteAuctionOne(req: Request, res: Response) {
+	async deleteAuctionSend(req: Request, res: Response) {
 		try {
 			const {token, _id} = req.body
 			const {user, id} = await verifyToken(token, res)
-		const {checkOwner}=checkUserOwner(res,user,_id)
-		const passwordUser = Math.floor(Math.random() * 8999) + 1000
-		await passwordSendDelete.sendmessage({
-			emailUser: user.email,
-			password:  passwordUser.toString(),
-		})
-		generateAccessToken(passwordUser)
+			const {checkOwner} = await checkUserOwner({res, user, _id})
+			const passwordUser: number = Math.floor(Math.random() * 8999) + 1000
+			const hashPassword = await bcrypt.hash(passwordUser.toString(), 7)
+   await AuctionDelete.deleteOne({id: _id})
+ 
 
+			await passwordSendDelete.sendmessage({
+				emailUser: user.email,
+				password: passwordUser.toString(),
+			})
+
+			const deleteAuction = new AuctionDelete({
+				idUser: id,
+				id: _id,
+				password: hashPassword,
+			})
+			deleteAuction.save()
+			res.status(200).json({
+				message: "",
+			})
+		} catch (e) {
+			console.log(e)
+			res.status(400).json({message: "Registration error"})
+		}
+	}
+	async deleteAuction(req: Request, res: Response) {
+		try {
+			const {token, _id} = req.body
+			const {user, id} = await verifyToken(token, res)
+			const {checkOwner} = await checkUserOwner({res, user, _id})
+   const deleteAuction=AuctionDelete.find
+			res.status(200).json({
+				message: "",
+			})
 		} catch (e) {
 			console.log(e)
 			res.status(400).json({message: "Registration error"})
