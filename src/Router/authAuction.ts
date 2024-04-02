@@ -333,7 +333,7 @@ class authAuction {
 			const {checkOwner} = await checkUserOwner({res, user, _id})
 			const passwordUser: number = Math.floor(Math.random() * 8999) + 1000
 			const hashPassword = await bcrypt.hash(passwordUser.toString(), 7)
-   await AuctionDelete.deleteOne({id: _id})
+   await AuctionDelete.deleteOne({idUser: id,})
  
 
 			await passwordSendDelete.sendmessage({
