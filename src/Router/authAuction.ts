@@ -5,14 +5,20 @@ const User = require("../model/user")
 const verifyToken = require("../middleware/verify")
 import express, {Request, Response} from "express"
 import {uploadFile, getFileStream} from "../s3"
+const AuctionDelete = require("../model/Delet")
+const checkUserOwner = require("../middleware/checkUserOwner")
 const {Storage} = require("@google-cloud/storage")
 const verifyTime = require("../middleware/timeMiddleware")
 const projectId = "commanding-ring-409619" // Get this from Google Cloud
 const keyFilename = "mykey.json"
+const bcrypt = require("bcryptjs")
+
+const generateAccessToken = require("../middleware/generateAccessToken")
+const PasswordSendDelete = require("../passwordSendDelete")
 // const fs = require("fs")
 // const util = require("util")
 // const unlinkFile = util.promisify(fs.unlink)
-
+const passwordSendDelete = new PasswordSendDelete()
 // const storage = new Storage({
 // 	projectId,
 // 	keyFilename,
@@ -21,29 +27,25 @@ const keyFilename = "mykey.json"
 class authAuction {
 	async createAuction(req, res: Response) {
 		try {
-
 			// const file = req.file
 			// const result = await uploadFile(file)
-			 		if (!req.file) {
-							return res.status(400).send("No file uploaded.")
-						}
-			
-					
-						console.log(req.file)
-						await  uploadFile(req.file);
+			if (!req.file) {
+				return res.status(400).send("No file uploaded.")
+			}
+
+			console.log(req.file)
+			await uploadFile(req.file)
 			// 			const blobStream = blob.createWriteStream();
-			
+
 			// 			blobStream.on("finish", () => {
 			// 					res.status(200).send("Success");
 			// 					console.log("Success");
 			// 			});
 			// 			blobStream.end(req.file.buffer);
-			
+
 			// 			const file = req.files[0]
 			// await unlinkFile(file.path)
 
-		
-		
 			const fileName = `https://faralaer.s3.eu-west-2.amazonaws.com/${req.file.originalname}`
 
 			const {title, minRates, endDate, desc, token} = req.body
@@ -61,7 +63,7 @@ class authAuction {
 			var currentDate = new Date()
 
 			const {user, id} = await verifyToken(token, res)
-console.log(user, id)
+			console.log(user, id)
 			const auction = new Auction({
 				img: fileName,
 				title: title,
@@ -324,8 +326,59 @@ console.log(user, id)
 			res.status(400).json({message: "Registration error"})
 		}
 	}
-	async deleteAuctionOne(req: Request, res: Response) {
+	async deleteAuctionSend(req: Request, res: Response) {
 		try {
+			const {token, _id} = req.body
+			const {user, id} = await verifyToken(token, res)
+			const {checkOwner} = await checkUserOwner({res, user, _id})
+			const passwordUser: number = Math.floor(Math.random() * 8999) + 1000
+			const hashPassword = await bcrypt.hash(passwordUser.toString(), 7)
+   await AuctionDelete.deleteOne({idUser: id,})
+ 
+
+			await passwordSendDelete.sendmessage({
+				emailUser: user.email,
+				password: passwordUser.toString(),
+			})
+
+			const deleteAuction = new AuctionDelete({
+				idUser: id,
+				id: _id,
+				password: hashPassword,
+			})
+			deleteAuction.save()
+			res.status(200).json({
+				message: "",
+			})
+		} catch (e) {
+			console.log(e)
+			res.status(400).json({message: "Registration error"})
+		}
+	}
+	async deleteAuction(req: Request, res: Response) {
+		try {
+			const {token,password} = req.body
+			const {user, id} = await verifyToken(token, res)
+			
+   const deleteAuction=await AuctionDelete.findOne({idUser: id,})
+			if (!deleteAuction) {
+				return res.status(400).json({ message: "Auction not found" });
+    }
+console.log(deleteAuction)
+			const _id= deleteAuction.id
+			const {checkOwner} = await checkUserOwner({res, user,_id})
+			const validPassword = bcrypt.compareSync(password.toString(), deleteAuction.password)
+			if (!validPassword) {
+				return res
+					.status(400)
+					.json({message: `The password entered is incorrect`})
+			}
+			await Auction.deleteOne({_id: deleteAuction.id,})
+			await AuctionDelete.deleteOne({idUser: id,})
+			
+			res.status(200).json({
+				message: "",
+			})
 		} catch (e) {
 			console.log(e)
 			res.status(400).json({message: "Registration error"})
