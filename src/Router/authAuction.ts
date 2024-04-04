@@ -357,10 +357,25 @@ class authAuction {
 	}
 	async deleteAuction(req: Request, res: Response) {
 		try {
-			const {token, _id} = req.body
+			const {token,password} = req.body
 			const {user, id} = await verifyToken(token, res)
-			const {checkOwner} = await checkUserOwner({res, user, _id})
-   const deleteAuction=AuctionDelete.find
+			
+   const deleteAuction=await AuctionDelete.findOne({idUser: id,})
+			if (!deleteAuction) {
+				return res.status(400).json({ message: "Auction not found" });
+    }
+console.log(deleteAuction)
+			const _id= deleteAuction.id
+			const {checkOwner} = await checkUserOwner({res, user,_id})
+			const validPassword = bcrypt.compareSync(password.toString(), deleteAuction.password)
+			if (!validPassword) {
+				return res
+					.status(400)
+					.json({message: `The password entered is incorrect`})
+			}
+			await Auction.deleteOne({_id: deleteAuction.id,})
+			await AuctionDelete.deleteOne({idUser: id,})
+			
 			res.status(200).json({
 				message: "",
 			})
