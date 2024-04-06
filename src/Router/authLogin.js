@@ -15,7 +15,13 @@ const emailSender = new Emailsend()
 const {Storage} = require("@google-cloud/storage")
 const projectId = "commanding-ring-409619" // Get this from Google Cloud
 const keyFilename = "mykey.json"
-const generateAccessToken=require('../middleware/generateAccessToken')
+const generateAccessToken = (id) => {
+	const playold = {
+		id,
+	}
+	return jwt.sign(playold, secret, {expiresIn: "24h"})
+}
+// const generateAccessToken=require('../middleware/generateAccessToken')
 // const storage = new Storage({
 // 	projectId,
 // 	keyFilename,
