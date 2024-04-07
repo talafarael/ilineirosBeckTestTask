@@ -305,6 +305,7 @@ const {token}=req.body
 				balance: user.balance,
 				bidAuction: user.bidAuction,
 				ownAuction: user.ownAuction,
+    avatar:user.img
 			}
 
 			return res.status(200).json({user: userInfo})
