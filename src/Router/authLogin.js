@@ -36,7 +36,7 @@ const {token}=req.body
 			const fileName = `https://faralaer.s3.eu-west-2.amazonaws.com/${req.file.originalname}`
 
 			const {user, id} = await verifyToken(token, res)
-			user.img = fileName
+			user.avatar = fileName
 
 			await user.save()
 			return res.status(200).json({message: "regis good"})
@@ -236,6 +236,7 @@ const {token}=req.body
 			console.log(name)
 			if (chaecknum == code) {
 				const user = new User({
+					avatar:'',
 					name: name,
 					email: email,
 					password: hashPassword,
@@ -305,7 +306,9 @@ const {token}=req.body
 				balance: user.balance,
 				bidAuction: user.bidAuction,
 				ownAuction: user.ownAuction,
-    avatar:user.img
+
+				avatar:user.avatar
+
 			}
 
 			return res.status(200).json({user: userInfo})
