@@ -54,7 +54,7 @@ const {token}=req.body
 					errors,
 				})
 			}
-
+   console.log(req.body)
 			const {email, password, name} = req.body
 
 			const candidate = await User.findOne({email})

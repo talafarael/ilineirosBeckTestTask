@@ -5,3 +5,7 @@ export interface checkUserOwner{
 	user:IUser,
 	_id:string
 }
+export interface IUserBid{
+	userId:string,
+	sum:number
+}

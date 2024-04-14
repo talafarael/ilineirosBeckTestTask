@@ -5,6 +5,8 @@ const User = require("../model/user")
 const verifyToken = require("../middleware/verify")
 import express, {Request, Response} from "express"
 import {uploadFile, getFileStream} from "../s3"
+import { IUser } from "../type/mongoType"
+import { IUserBid } from "../type/middlewareType"
 const AuctionDelete = require("../model/Delet")
 const checkUserOwner = require("../middleware/checkUserOwner")
 const {Storage} = require("@google-cloud/storage")
@@ -209,20 +211,45 @@ class authAuction {
 					.json({message: "Auction does not exist."})
 			}
 			const {user, id} = await verifyToken(token, res)
-			if (sum < auction.minRates && sum < auction.rates) {
+	
+
+		
+			let UserBid = auction.listRates.find((element:IUserBid) =>element.userId ==id );
+
+			if(!UserBid){
+				UserBid ={
+					userId: '',
+					sum: 0,
+				}
+			}else{
+				let indexLastbBidUser = auction.listRates.findIndex((element:IUserBid) =>element.userId ==id );
+				console.log(indexLastbBidUser)
+				auction.listRates.splice(indexLastbBidUser , 1)
+			}	
+				if (sum+UserBid.sum < auction.minRates && sum+UserBid.sum < auction.rates) {
 				return res.status(400).json({
 					message:
 						"If the sum is less than the minimum bid and less than the current bid, please make a higher bid",
 				})
 			}
+	if(sum-UserBid.sum>user.balance){
+		return res.status(400).json({
+			message:
+				"you dont have money ",
+		})
+	}
+
 			const bid = {
 				userId: id,
-				sum: sum,
+				sum: sum+UserBid.sum,
 			}
 			auction.rates = sum
 			auction.state = true
 			auction.listRates.push(bid)
 			auction.save()
+	 	user.bidAuction.push(auction._id)
+			user.balance=user.balance-sum
+			await user.save()
 			res.status(200).json({
 				auction: auction,
 				message: "",
