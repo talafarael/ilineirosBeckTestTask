@@ -14,7 +14,10 @@ const verifyTime = require("../middleware/timeMiddleware")
 const projectId = "commanding-ring-409619" // Get this from Google Cloud
 const keyFilename = "mykey.json"
 const bcrypt = require("bcryptjs")
+const Emailsend = require("../email")
 
+
+const emailSender = new Emailsend()
 const generateAccessToken = require("../middleware/generateAccessToken")
 const PasswordSendDelete = require("../passwordSendDelete")
 // const fs = require("fs")
@@ -204,6 +207,12 @@ class authAuction {
 	async makeBidAuctionOne(req: Request, res: Response) {
 		try {
 			const {sum, token, idAuction} = req.body
+			if(sum<0){
+				return res
+				.status(400)
+				.json({message: "the sum must be greater than zero"})
+		  
+			}
 			const auction = await Auction.findOne({_id: idAuction})
 			if (!auction) {
 				return res
@@ -211,9 +220,13 @@ class authAuction {
 					.json({message: "Auction does not exist."})
 			}
 			const {user, id} = await verifyToken(token, res)
-	
+	  
 
-		
+			if(auction.listRates[auction.listRates.length-1].userId==id){
+				return res
+				.status(400)
+				.json({message: "you have already placed a bet, wait until it is interrupted"})
+							}
 			let UserBid = auction.listRates.find((element:IUserBid) =>element.userId ==id );
 
 			if(!UserBid){
@@ -225,14 +238,21 @@ class authAuction {
 				let indexLastbBidUser = auction.listRates.findIndex((element:IUserBid) =>element.userId ==id );
 				console.log(indexLastbBidUser)
 				auction.listRates.splice(indexLastbBidUser , 1)
-			}	
+			}
+				if(++auction.rates*10/100+auction.rates>+sum+UserBid.sum){
+					console.log(auction.rates*10/100+auction.rates)
+					return res.status(400).json({
+						message:
+							"sum must be higher 10% than now",
+					})
+			}
 			if(sum>user.balance){
 					return res.status(400).json({
 					message:
 						"If the sum is less than the minimum bid and less than the current bid, please make a higher bid",
 				})
 			}
-				if (+sum+UserBid.sum < auction.minRates && +sum+UserBid.sum < auction.rates) {
+				if (+sum+UserBid.sum < auction.rates) {
 				return res.status(400).json({
 					message:
 						"If the sum is less than the minimum bid and less than the current bid, please make a higher bid",
@@ -244,15 +264,31 @@ class authAuction {
 				"you dont have money ",
 		})
 	}
-
+	
 			const bid = {
 				userId: id,
 				sum: +sum+UserBid.sum,
 			}
-			auction.rates = sum
+			auction.rates = +sum+UserBid.sum
 			auction.state = true
 			auction.listRates.push(bid)
+
+
+			const userEmail = await User.findOne({_id:auction.listRates[auction.listRates.length-2].userId})
+			await emailSender.sendmessage({
+				emailUser:userEmail.email,
+					num:`вашу ставку перебил ${user.name}`
+				})
+
+
+
+
 			auction.save()
+		if(sum!=0){
+			console.log('aaaa')
+			let indexBidUser = user.bidAuction.findIndex((element:IUserBid) =>element.userId ==id );
+			user.bidAuction.splice(indexBidUser , 1)
+		}
 	 	user.bidAuction.push(auction._id)
 			user.balance=user.balance-sum
 			await user.save()
@@ -321,6 +357,7 @@ class authAuction {
 
 	async changeInfoForChange(req: Request, res: Response) {
 		try {
+			
 			const {token, _id, title, minRates, timeEnd, desct} = req.body
 
 			const {user, id} = await verifyToken(token, res)
