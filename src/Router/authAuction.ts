@@ -277,7 +277,9 @@ class authAuction {
 			const userEmail = await User.findOne({_id:auction.listRates[auction.listRates.length-2].userId})
 			await emailSender.sendmessage({
 				emailUser:userEmail.email,
-					num:`вашу ставку перебил ${user.name}`
+					num:`вашу ставку перебил ${user.name}
+					https://il-auction-app.vercel.app/${auction._id}
+					`
 				})
 
 
