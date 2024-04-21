@@ -226,6 +226,12 @@ class authAuction {
 				console.log(indexLastbBidUser)
 				auction.listRates.splice(indexLastbBidUser , 1)
 			}	
+			if(sum>user.balance){
+					return res.status(400).json({
+					message:
+						"If the sum is less than the minimum bid and less than the current bid, please make a higher bid",
+				})
+			}
 				if (+sum+UserBid.sum < auction.minRates && +sum+UserBid.sum < auction.rates) {
 				return res.status(400).json({
 					message:

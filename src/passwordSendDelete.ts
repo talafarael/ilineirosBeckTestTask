@@ -5,6 +5,7 @@ interface SendMessageParams {
     password: string;
 }
 class passwordSendDelete {
+    transporter;
     constructor() {
         this.transporter = nodemailer.createTransport({
             service: 'gmail',
