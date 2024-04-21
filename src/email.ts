@@ -5,7 +5,9 @@ interface SendMessageParams {
     num: string;
 }
 class Emailsend {
+     transporter;
     constructor() {
+       
         this.transporter = nodemailer.createTransport({
             service: 'gmail',
             auth: {

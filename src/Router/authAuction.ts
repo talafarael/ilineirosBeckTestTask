@@ -226,13 +226,13 @@ class authAuction {
 				console.log(indexLastbBidUser)
 				auction.listRates.splice(indexLastbBidUser , 1)
 			}	
-				if (sum+UserBid.sum < auction.minRates && sum+UserBid.sum < auction.rates) {
+				if (+sum+UserBid.sum < auction.minRates && +sum+UserBid.sum < auction.rates) {
 				return res.status(400).json({
 					message:
 						"If the sum is less than the minimum bid and less than the current bid, please make a higher bid",
 				})
 			}
-	if(sum-UserBid.sum>user.balance){
+	if(+sum-UserBid.sum>+user.balance){
 		return res.status(400).json({
 			message:
 				"you dont have money ",
@@ -241,7 +241,7 @@ class authAuction {
 
 			const bid = {
 				userId: id,
-				sum: sum+UserBid.sum,
+				sum: +sum+UserBid.sum,
 			}
 			auction.rates = sum
 			auction.state = true
