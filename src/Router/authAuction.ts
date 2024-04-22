@@ -1,5 +1,4 @@
 const Auction = require("../model/Auction")
-import jwt, {JwtPayload} from "jsonwebtoken"
 const {secret} = require("../config")
 const User = require("../model/user")
 const verifyToken = require("../middleware/verify")
@@ -30,7 +29,7 @@ const passwordSendDelete = new PasswordSendDelete()
 // })
 // const bucket = storage.bucket("storageafarel")
 class authAuction {
-	async createAuction(req, res: Response) {
+	async createAuction(req: any, res: Response) {
 		try {
 			// const file = req.file
 			// const result = await uploadFile(file)
@@ -273,14 +272,16 @@ class authAuction {
 			auction.state = true
 			auction.listRates.push(bid)
 
-
-			const userEmail = await User.findOne({_id:auction.listRates[auction.listRates.length-2].userId})
+  if(auction.listRates[auction.listRates.length]<=2){
+	const userEmail = await User.findOne({_id:auction.listRates[auction.listRates.length-2].userId})
 			await emailSender.sendmessage({
 				emailUser:userEmail.email,
 					num:`вашу ставку перебил ${user.name}
 					https://il-auction-app.vercel.app/${auction._id}
 					`
 				})
+		}
+		
 
 
 
