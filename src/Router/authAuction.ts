@@ -273,6 +273,7 @@ class authAuction {
 			auction.listRates.push(bid)
 
   if(auction.listRates[auction.listRates.length]<=2){
+			console.log(arrr)
 	const userEmail = await User.findOne({_id:auction.listRates[auction.listRates.length-2].userId})
 			await emailSender.sendmessage({
 				emailUser:userEmail.email,
