@@ -11,6 +11,7 @@ const Auction = new Schema({
 	timeLive:{type:Number},
     listRates:{type:[]},
     owner:{type:String},
+    ownerId:{type:String},
     active:{type:Boolean}
 })
 module.exports = model("Auction",Auction)

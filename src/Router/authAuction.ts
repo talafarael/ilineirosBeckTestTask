@@ -79,8 +79,10 @@ class authAuction {
 				timeStart: currentDate,
 				listRates: [],
 				owner: user.name,
+				
 				ownerId: id,
 			})
+			
 			user.ownAuction.push(auction._id)
 
 			user.save()
@@ -220,12 +222,13 @@ class authAuction {
 			}
 			const {user, id} = await verifyToken(token, res)
 	  
-
+if(auction.listRates.length<0){
 			if(auction.listRates[auction.listRates.length-1].userId==id){
 				return res
 				.status(400)
 				.json({message: "you have already placed a bet, wait until it is interrupted"})
 							}
+						}
 			let UserBid = auction.listRates.find((element:IUserBid) =>element.userId ==id );
 
 			if(!UserBid){
@@ -238,6 +241,7 @@ class authAuction {
 				console.log(indexLastbBidUser)
 				auction.listRates.splice(indexLastbBidUser , 1)
 			}
+
 				if(++auction.rates*10/100+auction.rates>+sum+UserBid.sum){
 					console.log(auction.rates*10/100+auction.rates)
 					return res.status(400).json({
