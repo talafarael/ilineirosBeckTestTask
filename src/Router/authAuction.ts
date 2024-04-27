@@ -242,20 +242,20 @@ if(auction.listRates.length<0){
 				auction.listRates.splice(indexLastbBidUser , 1)
 			}
 
-				if(++auction.rates*10/100+auction.rates>+sum+UserBid.sum){
+				if(+auction.rates*10/100+auction.rates>+sum+UserBid.sum){
 					console.log(auction.rates*10/100+auction.rates)
 					return res.status(400).json({
 						message:
 							"sum must be higher 10% than now",
 					})
 			}
-			if(sum>user.balance){
+			if(+sum>+user.balance){
 					return res.status(400).json({
 					message:
 						"If the sum is less than the minimum bid and less than the current bid, please make a higher bid",
 				})
 			}
-				if (+sum+UserBid.sum < auction.rates) {
+				if (+sum+UserBid.sum < +auction.rates) {
 				return res.status(400).json({
 					message:
 						"If the sum is less than the minimum bid and less than the current bid, please make a higher bid",
@@ -298,7 +298,7 @@ if(auction.listRates.length<0){
 			user.bidAuction.splice(indexBidUser , 1)
 		}
 	 	user.bidAuction.push(auction._id)
-			user.balance=user.balance-sum
+			user.balance=+user.balance-sum
 			await user.save()
 			res.status(200).json({
 				auction: auction,
