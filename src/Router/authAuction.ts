@@ -241,8 +241,8 @@ if(auction.listRates.length<0){
 				console.log(indexLastbBidUser)
 				auction.listRates.splice(indexLastbBidUser , 1)
 			}
-
-				if(+auction.rates*10/100+auction.rates>+sum+UserBid.sum){
+const ten =+auction.rates*10/100
+				if(+ten+auction.rates>+sum+UserBid.sum){
 					console.log(auction.rates*10/100+auction.rates)
 					return res.status(400).json({
 						message:
