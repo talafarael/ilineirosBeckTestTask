@@ -241,9 +241,10 @@ if(auction.listRates.length<0){
 				console.log(indexLastbBidUser)
 				auction.listRates.splice(indexLastbBidUser , 1)
 			}
-const ten =+auction.rates*10/100
-				if(+ten+auction.rates>+sum+UserBid.sum){
-					console.log(auction.rates*10/100+auction.rates)
+const ten= Number(auction.rates*10/100)
+
+				if(ten+Number(auction.rates)>+sum+UserBid.sum){
+					console.log(ten+Number(auction.rates))
 					return res.status(400).json({
 						message:
 							"sum must be higher 10% than now",
