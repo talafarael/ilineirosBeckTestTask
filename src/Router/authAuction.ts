@@ -6,6 +6,7 @@ import express, {Request, Response} from "express"
 import {uploadFile, getFileStream} from "../s3"
 import { IUser } from "../type/mongoType"
 import { IUserBid } from "../type/middlewareType"
+import { calculateMinBet } from "../middleware/calculateMinBet"
 const AuctionDelete = require("../model/Delet")
 const checkUserOwner = require("../middleware/checkUserOwner")
 const {Storage} = require("@google-cloud/storage")
@@ -241,15 +242,38 @@ if(auction.listRates.length<0){
 				console.log(indexLastbBidUser)
 				auction.listRates.splice(indexLastbBidUser , 1)
 			}
-const ten= Number(auction.rates*10/100)
 
-				if(ten+Number(auction.rates)>+sum+UserBid.sum){
-					console.log(ten+Number(auction.rates))
-					return res.status(400).json({
-						message:
-							"sum must be higher 10% than now",
-					})
-			}
+
+
+
+
+
+
+
+
+const allSum=+sum+UserBid.sum;
+
+			// 	if(ten+Number(auction.rates)>+sum+UserBid.sum){
+			// 		console.log(ten+Number(auction.rates))
+			// 		return res.status(400).json({
+			// 			message:
+			// 				"sum must be higher 10% than now",
+			// 		})
+			// }
+			calculateMinBet(allSum, auction.rates,res)
+
+
+
+
+
+
+
+
+
+
+
+
+			
 			if(+sum>+user.balance){
 					return res.status(400).json({
 					message:
