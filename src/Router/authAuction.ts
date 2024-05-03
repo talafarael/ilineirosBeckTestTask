@@ -261,8 +261,28 @@ const allSum=+sum+UserBid.sum;
 			// 				"sum must be higher 10% than now",
 			// 		})
 			// }
-			await calculateMinBet(allSum, auction.rates,res, next)
-
+			 if(allSum>1000000){
+			if(allSum*1.01>=+auction.rates){
+				return res.status(400).json({
+								message:
+									"sum must be higher 1% than now",
+							})
+			}
+		}else if(allSum>100000){
+			if(allSum*1.05>=+auction.rates){
+				return res.status(400).json({
+								message:
+									"sum must be higher 5% than now",
+							})
+			}else if(allSum>10000){
+				if(allSum*1.1>=+auction.rates){
+					return res.status(400).json({
+									message:
+										"sum must be higher 10% than now",
+								})
+				}
+		}
+		}
 
 
 
