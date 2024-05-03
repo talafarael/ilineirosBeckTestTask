@@ -2,7 +2,7 @@ const Auction = require("../model/Auction")
 const {secret} = require("../config")
 const User = require("../model/user")
 const verifyToken = require("../middleware/verify")
-import express, {Request, Response} from "express"
+import express, {NextFunction, Request, Response} from "express"
 import {uploadFile, getFileStream} from "../s3"
 import { IUser } from "../type/mongoType"
 import { IUserBid } from "../type/middlewareType"
@@ -206,7 +206,7 @@ class authAuction {
 		}
 	}
 
-	async makeBidAuctionOne(req: Request, res: Response) {
+	async makeBidAuctionOne(req: Request, res: Response, next:NextFunction) {
 		try {
 			const {sum, token, idAuction} = req.body
 			if(sum<0){
@@ -261,7 +261,7 @@ const allSum=+sum+UserBid.sum;
 			// 				"sum must be higher 10% than now",
 			// 		})
 			// }
-			await calculateMinBet(allSum, auction.rates,res)
+			await calculateMinBet(allSum, auction.rates,res, next)
 
 
 

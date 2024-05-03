@@ -1,5 +1,5 @@
-import  { Response} from "express"
-export const calculateMinBet=(allSum:number,bid:number,res:Response)=>{
+import  { NextFunction, Response} from "express"
+export const calculateMinBet=(allSum:number,bid:number,res:Response, next:NextFunction)=>{
 	if(allSum<10000){
 		if(allSum*1.1>=bid){
    return res.status(400).json({
@@ -22,6 +22,6 @@ export const calculateMinBet=(allSum:number,bid:number,res:Response)=>{
 					})
 	}
 }
-
+next()
 }
 
