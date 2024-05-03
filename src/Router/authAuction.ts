@@ -215,13 +215,14 @@ class authAuction {
 				.json({message: "the sum must be greater than zero"})
 		  
 			}
+			const {user, id} = await verifyToken(token, res)
 			const auction = await Auction.findOne({_id: idAuction})
 			if (!auction) {
 				return res
 					.status(400)
 					.json({message: "Auction does not exist."})
 			}
-			const {user, id} = await verifyToken(token, res)
+			
 	  
 if(auction.listRates.length<0){
 			if(auction.listRates[auction.listRates.length-1].userId==id){
@@ -260,7 +261,7 @@ const allSum=+sum+UserBid.sum;
 			// 				"sum must be higher 10% than now",
 			// 		})
 			// }
-			calculateMinBet(allSum, auction.rates,res)
+			await calculateMinBet(allSum, auction.rates,res)
 
 
 
