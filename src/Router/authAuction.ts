@@ -261,22 +261,23 @@ const allSum=+sum+UserBid.sum;
 			// 				"sum must be higher 10% than now",
 			// 		})
 			// }
-			 if(Number(allSum)>1000000){
-			if(Number(allSum)*1.01>=Number(auction.rates)){
+			 if(Number(auction.rates)>1000000){
+			if(Number(auction.rates)*1.01>Number(allSum)){
 				return res.status(400).json({
 								message:
 									"sum must be higher 1% than now",
 							})
 			}
-		}else if(Number(allSum)>100000){
-			if(Number(allSum)*1.05>=+Number(auction.rates)){
-				console.log(allSum*1.05)
+		}else if(Number(auction.rates)>100000){
+			console.log(auction.rates)
+			if(Number(auction.rates)*1.05>+Number(allSum)){
+				console.log(auction.rates*1.05)
 				return res.status(400).json({
 								message:
 									"sum must be higher 5% than now",
 							})
-			}else if(Number(allSum)>10000){
-				if(Number(allSum)*1.1>=Number(auction.rates)){
+			}else if(Number(auction.rates)>10000){
+				if(Number(auction.rates)*1.1>Number(allSum)){
 					return res.status(400).json({
 									message:
 										"sum must be higher 10% than now",
