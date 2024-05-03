@@ -7,16 +7,14 @@ export const calculateMinBet=(allSum:number,bid:number,res:Response)=>{
 								"sum must be higher 10% than now",
 						})
 		}
-}
-if(allSum<100000){
+}else if(allSum<100000){
 	if(allSum*1.05>=bid){
 		return res.status(400).json({
 						message:
 							"sum must be higher 5% than now",
 					})
 	}
-}
-if(allSum<1000000){
+}else if(allSum<1000000){
 	if(allSum*1.01>=bid){
 		return res.status(400).json({
 						message:
