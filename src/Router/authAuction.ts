@@ -270,6 +270,7 @@ const allSum=+sum+UserBid.sum;
 			}
 		}else if(allSum>100000){
 			if(allSum*1.05>=+auction.rates){
+				console.log(allSum*1.05)
 				return res.status(400).json({
 								message:
 									"sum must be higher 5% than now",
