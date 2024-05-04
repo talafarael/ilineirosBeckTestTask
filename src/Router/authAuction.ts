@@ -252,7 +252,7 @@ if(auction.listRates.length<0){
 
 
 
-const allSum=+sum+UserBid.sum;
+const allSum=Number(sum)+Number(UserBid.sum);
 
 			// 	if(ten+Number(auction.rates)>+sum+UserBid.sum){
 			// 		console.log(ten+Number(auction.rates))
@@ -303,13 +303,13 @@ const allSum=+sum+UserBid.sum;
 						"If the sum is less than the minimum bid and less than the current bid, please make a higher bid",
 				})
 			}
-				if (+sum+UserBid.sum < +auction.rates) {
+				if (Number(sum)+Number(UserBid.sum) < +Number(auction.rates)) {
 				return res.status(400).json({
 					message:
 						"If the sum is less than the minimum bid and less than the current bid, please make a higher bid",
 				})
 			}
-	if(+sum-UserBid.sum>+user.balance){
+	if(sum-UserBid.sum>Number(user.balance)){
 		return res.status(400).json({
 			message:
 				"you dont have money ",
@@ -318,9 +318,9 @@ const allSum=+sum+UserBid.sum;
 	
 			const bid = {
 				userId: id,
-				sum: +sum+UserBid.sum,
+				sum: Number(sum)+Number(UserBid.sum),
 			}
-			auction.rates = +sum+UserBid.sum
+			auction.rates = Number(sum)+Number(UserBid.sum);
 			auction.state = true
 			auction.listRates.push(bid)
 
@@ -346,7 +346,7 @@ const allSum=+sum+UserBid.sum;
 			user.bidAuction.splice(indexBidUser , 1)
 		}
 	 	user.bidAuction.push(auction._id)
-			user.balance=+user.balance-sum
+			user.balance=user.balance-sum
 			await user.save()
 			res.status(200).json({
 				auction: auction,
