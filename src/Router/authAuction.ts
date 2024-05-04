@@ -333,7 +333,7 @@ console.log(userEmail)
 			await emailSender.sendmessage({
 				emailUser:userEmail.email,
 					num:`вашу ставку перебил ${user.name}
-					https://il-auction-app.vercel.app/${auction._id}
+					https://il-auction-app.vercel.app/auction/${auction._id}
 					`
 				})
 		}
