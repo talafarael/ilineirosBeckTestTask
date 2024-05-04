@@ -286,7 +286,7 @@ const allSum=sum+UserBid.sum;
 		}
 		}
 
-console.log(allSum)
+console.log(allSum+'aaaaaaaaaa')
 		console.log(auction.rates*1.05)
 
 
