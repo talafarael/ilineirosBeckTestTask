@@ -231,7 +231,7 @@ if(auction.listRates.length>0){
 				.json({message: "you have already placed a bet, wait until it is interrupted"})
 							}
 						}
-			let UserBid = auction.listRates.find((element:IUserBid) =>element.userId ==id );
+			let UserBid = auction.listRates.find((element:IUserBid) =>element.userId ==id);
 
 			if(!UserBid){
 				UserBid ={
@@ -297,7 +297,7 @@ const allSum=Number(sum)+Number(UserBid.sum);
 
 
 			
-			if(+sum>+user.balance){
+			if(Number(sum)>Number(user.balance)){
 					return res.status(400).json({
 					message:
 						"If the sum is less than the minimum bid and less than the current bid, please make a higher bid",
@@ -324,7 +324,7 @@ const allSum=Number(sum)+Number(UserBid.sum);
 			auction.state = true
 			auction.listRates.push(bid)
 
-  if(auction.listRates[auction.listRates.length]<=2){
+  if(auction.listRates[auction.listRates.length]>=2){
 			console.log('arrr')
 	const userEmail = await User.findOne({_id:auction.listRates[auction.listRates.length-2].userId})
 console.log(userEmail)
