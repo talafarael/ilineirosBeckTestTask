@@ -252,7 +252,7 @@ if(auction.listRates.length>0){
 
 
 
-const allSum=Number(sum)+Number(UserBid.sum);
+const allSum=sum+UserBid.sum;
 
 			// 	if(ten+Number(auction.rates)>+sum+UserBid.sum){
 			// 		console.log(ten+Number(auction.rates))
@@ -286,8 +286,8 @@ const allSum=Number(sum)+Number(UserBid.sum);
 		}
 		}
 
-
-
+console.log(allSum)
+		console.log(auction.rates*1.05)
 
 
 
