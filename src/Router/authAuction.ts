@@ -326,8 +326,8 @@ console.log(auction.rates)
 			auction.state = true
 			auction.listRates.push(bid)
 
-  if(auction.listRates[auction.listRates.length]>=2){
-			console.log('arrr')
+  if(auction.listRates.length>=2){
+		
 	const userEmail = await User.findOne({_id:auction.listRates[auction.listRates.length-2].userId})
 console.log(userEmail)
 			await emailSender.sendmessage({
