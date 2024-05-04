@@ -224,7 +224,7 @@ class authAuction {
 			}
 			
 	  
-if(auction.listRates.length<0){
+if(auction.listRates.length>0){
 			if(auction.listRates[auction.listRates.length-1].userId==id){
 				return res
 				.status(400)
@@ -327,6 +327,7 @@ const allSum=Number(sum)+Number(UserBid.sum);
   if(auction.listRates[auction.listRates.length]<=2){
 			console.log('arrr')
 	const userEmail = await User.findOne({_id:auction.listRates[auction.listRates.length-2].userId})
+console.log(userEmail)
 			await emailSender.sendmessage({
 				emailUser:userEmail.email,
 					num:`вашу ставку перебил ${user.name}
