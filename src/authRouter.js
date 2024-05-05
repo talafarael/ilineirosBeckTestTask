@@ -30,20 +30,21 @@ router.post('/registercreate',controllerLogin.registerCreate)
 router.get('/sendemail',controllerLogin.SendEmail)
 router.post('/editprofileimage',type,controllerLogin.editprofileimage)
 router.post('/validatetoken',controllerLogin.validateToken)
+router.post('/changesendtokenpassword',controllerLogin.changeSendTokenPassword)
 router.post('/getseller',middlewareUser,controllerLogin.getSeller)
+router.post('/checktoken',middlewareUser,controllerLogin.checkToken)
+router.post('/changepassword',controllerLogin.changePassword)
 
 //aukction
 router.get('/getauction',auctionController.getAuction)
-
 router.post('/getauctionone',middlewareUser,auctionController.getAuctionOne)
 router.post('/makebidauctionone',middlewareUser,auctionController.makeBidAuctionOne)
-
 router.post('/getownauctions',middlewareUser,auctionController.getOwnAuctions)
 router.post('/createauction',type,auctionController.createAuction)
 router.post('/getauctioninfoforchange',auctionController.getInfoForChange)
 router.post('/editfieldauction',middlewareUser,auctionController.changeInfoForChange)
 router.post('/deleteauction',middlewareUser,auctionController.deleteAuction)
-
 router.post('/deleteauctionsend',middlewareUser,auctionController.deleteAuctionSend)
+
 
 module.exports = router

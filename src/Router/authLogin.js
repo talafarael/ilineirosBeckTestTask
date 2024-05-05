@@ -30,9 +30,9 @@ const generateAccessToken = (id) => {
 class authController {
 	async editprofileimage(req, res) {
 		try {
-const {token}=req.body
-			await  uploadFile(req.file);
-		
+			const {token} = req.body
+			await uploadFile(req.file)
+
 			const fileName = `https://faralaer.s3.eu-west-2.amazonaws.com/${req.file.originalname}`
 
 			const {user, id} = await verifyToken(token, res)
@@ -54,7 +54,7 @@ const {token}=req.body
 					errors,
 				})
 			}
-   console.log(req.body)
+			console.log(req.body)
 			const {email, password, name} = req.body
 
 			const candidate = await User.findOne({email})
@@ -236,7 +236,7 @@ const {token}=req.body
 			console.log(name)
 			if (chaecknum == code) {
 				const user = new User({
-					avatar:'',
+					avatar: "",
 					name: name,
 					email: email,
 					password: hashPassword,
@@ -295,25 +295,67 @@ const {token}=req.body
 			console.log(e)
 			res.status(400).json({message: "Registration error"})
 		}
-	
 	}
-	async getSeller(req,res){
+	async getSeller(req, res) {
 		try {
-			const {sellerID}=req.body
-			const user=await User.findOne({_id:sellerID})
-			const info={
-				name:user.name,
-				avatar:user.avatar,
-				ownAuction:user.ownAuction
+			const {sellerID} = req.body
+			const user = await User.findOne({_id: sellerID})
+			const info = {
+				name: user.name,
+				avatar: user.avatar,
+				ownAuction: user.ownAuction,
 			}
 			return res.status(200).json({
-				info:info
+				info: info,
 			})
 		} catch (e) {
 			console.log(e)
 			res.status(400).json({message: "Registration error"})
 		}
-	
+	}
+	async changeSendTokenPassword(req, res) {
+		try {
+			const {email} = req.body
+			const user =await User.findOne({email: email})
+			if (!user) {
+				return res.status(404).json({message: "User not found"})
+			}
+			const token = generateAccessToken(user._id)
+			console.log(user)
+			 console.log(token)
+				console.log(secret)
+			await emailSender.sendmessage({
+				emailUser: email,
+				num: `https://il-auction-app.vercel.app/change/password?token=${token}`,
+			})
+			return res.status(200).json({status: true})
+		} catch (e) {
+			console.log(e)
+			res.status(400).json({message: "Registration error"})
+		}
+	}
+	async checkToken(req, res) {
+		try {
+			const {token}=req.body
+			const {user, id} = await verifyToken(token, res)
+			return res.status(200).json({status: true})
+		} catch (e) {
+			console.log(e)
+			res.status(400).json({message: "Registration error"})
+		}
+	}
+	async changePassword(req, res) {
+		try {
+			const {token,password}=req.body
+			const {user, id} = await verifyToken(token, res)
+			const hashPassword = await bcrypt.hash(password, 7)
+			user.password=hashPassword
+			await user.save()
+			return res.status(200).json({message: 'password change'})
+		} catch (e) {
+			console.log(e)
+			res.status(400).json({message: "Registration error"})
+		}
 	}
 	async getUser(req, res) {
 		try {
@@ -326,8 +368,7 @@ const {token}=req.body
 				bidAuction: user.bidAuction,
 				ownAuction: user.ownAuction,
 
-				avatar:user.avatar
-
+				avatar: user.avatar,
 			}
 
 			return res.status(200).json({user: userInfo})
