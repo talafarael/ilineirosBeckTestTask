@@ -79,8 +79,7 @@ class authAuction {
 				timeStart: currentDate,
 				listRates: [],
 				owner: user.name,
-
-				ownerId: id,
+    ownerId: id,
 			})
 
 			user.ownAuction.push(auction._id)
