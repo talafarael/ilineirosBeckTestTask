@@ -21,7 +21,7 @@ app.set("views", path.resolve(__dirname, "ejs"))
 
 app.use(express.static("public"))
 
-app.use("/auth", authRouter)
+app.use("/api", authRouter)
 const start = async () => {
 	try {
 		await mongoose.connect(
