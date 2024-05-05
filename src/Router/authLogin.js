@@ -295,6 +295,23 @@ const {token}=req.body
 			console.log(e)
 			res.status(400).json({message: "Registration error"})
 		}
+	
+	}
+	async getSeller(req,res){
+		try {
+			const {sellerID}=req.body
+			const user=User.findOne({_id:sellerID})
+			const info={
+				name:user.name,
+				avatar:user.avatar,
+				ownAuction:user.ownAuction
+			}
+			return info
+		} catch (e) {
+			console.log(e)
+			res.status(400).json({message: "Registration error"})
+		}
+	
 	}
 	async getUser(req, res) {
 		try {

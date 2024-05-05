@@ -30,6 +30,8 @@ router.post('/registercreate',controllerLogin.registerCreate)
 router.get('/sendemail',controllerLogin.SendEmail)
 router.post('/editprofileimage',type,controllerLogin.editprofileimage)
 router.post('/validatetoken',controllerLogin.validateToken)
+router.post('/getseller',middlewareUser,controllerLogin.getSeller)
+
 //aukction
 router.get('/getauction',auctionController.getAuction)
 
