@@ -300,13 +300,15 @@ const {token}=req.body
 	async getSeller(req,res){
 		try {
 			const {sellerID}=req.body
-			const user=User.findOne({_id:sellerID})
+			const user=await User.findOne({_id:sellerID})
 			const info={
 				name:user.name,
 				avatar:user.avatar,
 				ownAuction:user.ownAuction
 			}
-			return info
+			return res.status(200).json({
+				info:info
+			})
 		} catch (e) {
 			console.log(e)
 			res.status(400).json({message: "Registration error"})
