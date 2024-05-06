@@ -207,7 +207,7 @@ class authAuction {
 		}
 	}
 
-	async makeBidAuctionOne(req: Request, res: Response, next: NextFunction) {
+	async makeBidAuctionOne(req: Request, res: Response) {
 		try {
 			const {sum, token, idAuction} = req.body
 			if (sum < 0) {
