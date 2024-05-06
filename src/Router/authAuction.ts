@@ -188,13 +188,16 @@ class authAuction {
 			if (auction.owner == user.name) {
 				stateOwner = true
 			}
+			let UserBid = auction.listRates.find(
+				(element: IUserBid) => element.userId == id
+			)
 			const active = await verifyTime(auction.timeEnd, res)
 			console.log(active)
 			auction.active = active
 			auction.save()
 			res.status(200).json({
 				stateOwner: stateOwner,
-
+				UserBid:UserBid,
 				auction: auction,
 				message: "Auction created successfully",
 			})
