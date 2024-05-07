@@ -15,7 +15,7 @@ const projectId = "commanding-ring-409619" // Get this from Google Cloud
 const keyFilename = "mykey.json"
 const bcrypt = require("bcryptjs")
 const Emailsend = require("../email")
-
+const HistoryBid=require('../model/HistoryBid')
 const emailSender = new Emailsend()
 const generateAccessToken = require("../middleware/generateAccessToken")
 const PasswordSendDelete = require("../passwordSendDelete")
