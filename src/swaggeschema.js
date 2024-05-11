@@ -58,8 +58,8 @@ app.post("/api/getuser", (req, res) => {})
  *
  * /api/registration:
  *   post:
- *     summary: это первая часть регистрации
- *     description: после первой части вы должны кинутль запрос sendemail дял получение одноразвого пароля .
+ *     summary: This is the first part of registration
+ *     description: After the first part, you should send a request to /api/sendemail to receive a one-time password.
  *     requestBody:
  *       description: User data for authentication
  *       required: true
@@ -70,13 +70,13 @@ app.post("/api/getuser", (req, res) => {})
  *             properties:
  *               email:
  *                 type: string
- *                 description: Электронная почта пользователя
+ *                 description: User's email
  *               password:
  *                 type: string
- *                 description: Пароль пользователя
+ *                 description: User's password
  *               name:
  *                  type: string
- *                  description: User's authentication token
+ *                  description: User's name
  *     responses:
  *       200:
  *         description: Successful authentication
@@ -91,15 +91,120 @@ app.post("/api/registration", (req, res) => {})
  *
  * /api/sendemail:
  *   get:
- *     summary: это вторая часть регистрации
- *     description: после второй на вашу почту приходит письмо с паролем  а дальше registercreate .
- *     requestBody:
- *       description: User data for authentication
- *       required: true
+ *     summary: This is the second part of registration
+ *     description: After the second part, an email with a password will be sent to your email address, then proceed to /api/registercreate.
  *     responses:
  *       200:
  *         description: Successful authentication
  *       401:
  *         description: Invalid credentials
  */
-app.post("/api/registration", (req, res) => {})
+app.get("/api/sendemail", (req, res) => {})
+
+/**
+ * @swagger
+ *
+ * /api/registercreate:
+ *   post:
+ *     summary: Third part of registration
+ *     description: Enter the one-time password sent to your email.
+ *     requestBody:
+ *       description: User data for authentication
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               code:
+ *                 type: string
+ *                 description: User's authentication token
+ *     responses:
+ *       200:
+ *         description: Successful authentication
+ *       401:
+ *         description: Invalid credentials
+ */
+app.post("/api/registercreate", (req, res) => {})
+
+
+/**
+ * @swagger
+ *
+ * /api/editprofileimage:
+ *   post:
+ *     summary: change img profile
+ *     description: In this endpoint, the user can change their profile image. They need to provide an authentication token along with the image they want to set as their profile picture..
+ *     requestBody:
+ *       description: img and token 
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               token:
+ *                 type: string
+ *                 description: User's authentication token
+ *               img:
+ *                 type: string
+ *                 format: binary
+ *     responses:
+ *       200:
+ *         description: Successful authentication
+ *       401:
+ *         description: Invalid credentials
+ */
+app.post("/api/editprofileimage", (req, res) => {})
+
+
+/**
+ * @swagger
+ *
+ * /api/validatetoken:
+ *   post:
+ *     summary: check token user
+ *     requestBody:
+ *       description: token
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               token:
+ *                 type: string
+ *                 description: User's authentication token       
+ *     responses:
+ *       200:
+ *         description: Successful authentication
+ *       401:
+ *         description: Invalid credentials
+ */
+app.post("/api/validatetoken", (req, res) => {})
+
+/**
+ * @swagger
+ *
+ * /api/recoverypassword:
+ *   post:
+ *     summary: change password
+	*     description: you send email and after that you get once passwrod
+ *     requestBody:
+ *       description: token
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               token:
+ *                 type: string
+ *                 description: User's authentication token       
+ *     responses:
+ *       200:
+ *         description: Successful authentication
+ *       401:
+ *         description: Invalid credentials
+ */
+app.post("/api/recoverypassword", (req, res) => {})
