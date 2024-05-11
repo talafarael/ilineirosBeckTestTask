@@ -85,7 +85,6 @@ app.post("/api/getuser", (req, res) => {})
  */
 app.post("/api/registration", (req, res) => {})
 
-
 /**
  * @swagger
  *
@@ -127,7 +126,6 @@ app.get("/api/sendemail", (req, res) => {})
  */
 app.post("/api/registercreate", (req, res) => {})
 
-
 /**
  * @swagger
  *
@@ -136,7 +134,7 @@ app.post("/api/registercreate", (req, res) => {})
  *     summary: change img profile
  *     description: In this endpoint, the user can change their profile image. They need to provide an authentication token along with the image they want to set as their profile picture..
  *     requestBody:
- *       description: img and token 
+ *       description: img and token
  *       required: true
  *       content:
  *         application/json:
@@ -157,7 +155,6 @@ app.post("/api/registercreate", (req, res) => {})
  */
 app.post("/api/editprofileimage", (req, res) => {})
 
-
 /**
  * @swagger
  *
@@ -174,7 +171,7 @@ app.post("/api/editprofileimage", (req, res) => {})
  *             properties:
  *               token:
  *                 type: string
- *                 description: User's authentication token       
+ *                 description: User's authentication token
  *     responses:
  *       200:
  *         description: Successful authentication
@@ -189,7 +186,33 @@ app.post("/api/validatetoken", (req, res) => {})
  * /api/recoverypassword:
  *   post:
  *     summary: change password
-	*     description: you send email and after that you get once passwrod
+ *     description: you send email and after that you get once password
+ *     requestBody:
+ *       description: your email
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 description: User's authentication token
+ *     responses:
+ *       200:
+ *         description: Successful authentication
+ *       401:
+ *         description: Invalid credentials
+ */
+app.post("/api/recoverypassword", (req, res) => {})
+
+/**
+ * @swagger
+ *
+ * /api/checktoken:
+ *   post:
+ *     summary: verify changePasswordToken
+ *     description:
  *     requestBody:
  *       description: token
  *       required: true
@@ -200,11 +223,65 @@ app.post("/api/validatetoken", (req, res) => {})
  *             properties:
  *               token:
  *                 type: string
- *                 description: User's authentication token       
+ *                 description: User's authentication token
  *     responses:
  *       200:
  *         description: Successful authentication
  *       401:
  *         description: Invalid credentials
  */
-app.post("/api/recoverypassword", (req, res) => {})
+app.post("/api/checktoken", (req, res) => {})
+
+/**
+ * @swagger
+ *
+ * /api/changepassword:
+ *   post:
+ *     summary: you change password 
+	*     description: you enter new password and change password 
+ *     requestBody:
+ *       description: token
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               token:
+ *                 type: string
+ *                 description: User's authentication token  
+	*               password:
+	*                 type: string
+ *                 description: User's new password  
+ *     responses:
+ *       200:
+ *         description: Successful authentication
+ *       401:
+ *         description: Invalid credentials
+ */
+app.post("/api/changepassword", (req, res) => {})
+
+/**
+ * @swagger
+ *
+ * /api/getseller:
+ *   post:
+ *     summary: you get info about seller  
+ *     requestBody:
+ *       description:sellerID
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               sellerID:
+ *                 type: string
+ *                 description: User's authentication token  
+ *     responses:
+ *       200:
+ *         description: Successful authentication
+ *       401:
+ *         description: Invalid credentials
+ */
+	app.post("/api/getseller", (req, res) => {})

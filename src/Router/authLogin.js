@@ -316,14 +316,11 @@ class authController {
 	async changeSendTokenPassword(req, res) {
 		try {
 			const {email} = req.body
-			const user =await User.findOne({email: email})
+			const user = await User.findOne({email: email})
 			if (!user) {
 				return res.status(404).json({message: "User not found"})
 			}
 			const token = generateAccessToken(user._id)
-			console.log(user)
-			 console.log(token)
-				console.log(secret)
 			await emailSender.sendmessage({
 				emailUser: email,
 				num: `https://il-auction-app.vercel.app/change/password?token=${token}`,
@@ -336,7 +333,7 @@ class authController {
 	}
 	async checkToken(req, res) {
 		try {
-			const {token}=req.body
+			const {token} = req.body
 			const {user, id} = await verifyToken(token, res)
 			return res.status(200).json({status: true})
 		} catch (e) {
@@ -346,12 +343,12 @@ class authController {
 	}
 	async changePassword(req, res) {
 		try {
-			const {token,password}=req.body
+			const {token, password} = req.body
 			const {user, id} = await verifyToken(token, res)
 			const hashPassword = await bcrypt.hash(password, 7)
-			user.password=hashPassword
+			user.password = hashPassword
 			await user.save()
-			return res.status(200).json({message: 'password change'})
+			return res.status(200).json({message: "password change"})
 		} catch (e) {
 			console.log(e)
 			res.status(400).json({message: "Registration error"})
