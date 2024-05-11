@@ -268,7 +268,7 @@ app.post("/api/changepassword", (req, res) => {})
  *   post:
  *     summary: you get info about seller  
  *     requestBody:
- *       description:sellerID
+ *       description: sellerID
  *       required: true
  *       content:
  *         application/json:
