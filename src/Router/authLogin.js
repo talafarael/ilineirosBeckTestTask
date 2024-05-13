@@ -1,11 +1,12 @@
 import {uploadFile} from "../s3"
-
 const bcrypt = require("bcryptjs")
 const {validationResult} = require("express-validator")
 const User = require("../model/user")
+const PreRegister = require("../model/PreRegister")
 const tempData = require("../cache")
 const {Request, Response, NextFunction} = require("express")
 const {secret} = require("../config")
+const timeUser=require('../middleware/timeUser')
 const jwt = require("jsonwebtoken")
 // const forgotdata = require('../email');
 const Emailsend = require("../email")
@@ -15,6 +16,7 @@ const emailSender = new Emailsend()
 const {Storage} = require("@google-cloud/storage")
 const projectId = "commanding-ring-409619" // Get this from Google Cloud
 const keyFilename = "mykey.json"
+const generateToken = require("../middleware/generateAccessToken")
 const generateAccessToken = (id) => {
 	const playold = {
 		id,
@@ -71,21 +73,27 @@ class authController {
 			}
 			const hashPassword = await bcrypt.hash(password, 7)
 			const chaecknum = Math.floor(Math.random() * 8999) + 1000
-			console.log(chaecknum)
 			const status = true
-			tempData.setTempData(
-				"registrationData",
-				{
-					name,
-					email,
-					chaecknum,
-					hashPassword,
-					status,
-				},
-				30 * 60 * 1000
-			)
 
-			return res.status(200).json({message: "regis good"})
+			const preregister = new Preregister({
+				avatar: "",
+				balance: 0,
+				name: name,
+				email: email,
+				code: chaecknum,
+				password: hashPassword,
+				status: status,
+				bidAuction: [],
+				ownAuction: [],
+			})
+			preregister.save()
+			const token = generateToken({
+				id: preregister._id,
+				Register: Register,
+				time: "5min",
+			})
+
+			return res.status(200).json({token: token})
 		} catch (e) {
 			console.error(e)
 			res.status(400).json({message: "Registration error"})

@@ -17,6 +17,7 @@ const bcrypt = require("bcryptjs")
 const Emailsend = require("../email")
 const HistoryBid=require('../model/HistoryBid')
 const emailSender = new Emailsend()
+
 const generateAccessToken = require("../middleware/generateAccessToken")
 const PasswordSendDelete = require("../passwordSendDelete")
 // const fs = require("fs")
