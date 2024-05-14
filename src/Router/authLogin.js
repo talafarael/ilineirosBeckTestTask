@@ -2,11 +2,11 @@ import {uploadFile} from "../s3"
 const bcrypt = require("bcryptjs")
 const {validationResult} = require("express-validator")
 const User = require("../model/user")
-const PreRegister = require("../model/PreRegister")
+const Preregister = require("../model/PreRegister")
 const tempData = require("../cache")
 const {Request, Response, NextFunction} = require("express")
 const {secret} = require("../config")
-const timeUser=require('../middleware/timeUser')
+const timeUser = require("../middleware/timeUser")
 const jwt = require("jsonwebtoken")
 // const forgotdata = require('../email');
 const Emailsend = require("../email")
@@ -76,20 +76,16 @@ class authController {
 			const status = true
 
 			const preregister = new Preregister({
-				avatar: "",
-				balance: 0,
 				name: name,
 				email: email,
 				code: chaecknum,
 				password: hashPassword,
 				status: status,
-				bidAuction: [],
-				ownAuction: [],
 			})
 			preregister.save()
 			const token = generateToken({
 				id: preregister._id,
-				Register: Register,
+				secret:process.env.REGISTERSECRET,
 				time: "5min",
 			})
 
@@ -141,17 +137,7 @@ class authController {
 				num: chaecknum.toString(),
 			})
 
-			tempData.setTempData(
-				"registrationData",
-				{
-					name,
-					email,
-					chaecknum,
-					hashPassword: savedData.hashPassword,
-					status,
-				},
-				30 * 60 * 1000
-			)
+		
 		} catch (e) {
 			console.log(e)
 			res.status(400).json({message: "Registration error"})
@@ -159,39 +145,31 @@ class authController {
 	}
 	async SendEmail(req, res) {
 		try {
-			const savedData = tempData.getTempData("registrationData")
-
-			if (!savedData) {
+			const {token} = req.query
+			console.log(token)
+			if (!token) {
 				return res
 					.status(400)
 					.json({message: "Registration data not found"})
 			}
-			const {name, email, chaecknum} = savedData
 
-			let status = savedData.status
-			if (status) {
+			const {preRegister, id} = await timeUser({
+				token: token,
+				res: res,
+				secret:process.env.REGISTERSECRET,
+			})
+			console.log(preRegister)
+			if (preRegister.status) {
 				await emailSender.sendmessage({
-					emailUser: email,
-					num: chaecknum.toString(),
+					emailUser: preRegister.email,
+					num: preRegister.code.toString(),
 				})
 
-				status = false
-				tempData.setTempData(
-					"registrationData",
-					{
-						name,
-						email,
-						chaecknum,
-						hashPassword: savedData.hashPassword,
-						status,
-					},
-					30 * 60 * 1000
-				)
-
-				return res
-					.status(200)
-					.json({message: "Email sent successfully"})
+				preRegister.status = false
+				preRegister.save()
 			}
+
+			return res.status(200).json({message: "Email sent successfully"})
 		} catch (e) {
 			console.error("There was an error sending the email:", e)
 			return res.status(400).json({message: "Email sending error"})
@@ -231,23 +209,22 @@ class authController {
 	// }
 	async registerCreate(req, res) {
 		try {
-			const savedData = tempData.getTempData("registrationData")
-			const {code} = req.body
+			
+			const {code, token} = req.body
+		
+			
 
-			if (!savedData) {
-				return res
-					.status(400)
-					.json({message: "Registration data not found"})
-			}
-
-			const {name, email, chaecknum, hashPassword, status} = savedData
-			console.log(name)
-			if (chaecknum == code) {
+			const {preRegister, id} = await timeUser({
+				token: token,
+				res: res,
+				secret:process.env.REGISTERSECRET,
+			})
+			if (preRegister.code != code) {
 				const user = new User({
 					avatar: "",
-					name: name,
-					email: email,
-					password: hashPassword,
+					name: preRegister.name,
+					email: preRegister.email,
+					password: preRegister.password,
 					balance: 100,
 					bidAuction: [],
 					ownAuction: [],
@@ -257,17 +234,7 @@ class authController {
 					message: "regist successfull",
 				})
 			}
-			tempData.setTempData(
-				"registrationData",
-				{
-					email,
-					chaecknum,
-					hashPassword,
-					status,
-				},
-				30 * 60 * 1000
-			)
-			return res.status(400).json({message: "Invalid code"})
+		return res.status(400).json({message: "Invalid code"})
 		} catch (error) {
 			console.error("Error during registration:", error)
 			return res.status(500).json({message: "Registration error"})

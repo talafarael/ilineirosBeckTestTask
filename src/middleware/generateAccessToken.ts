@@ -10,6 +10,7 @@ const generateAccessToken = ({ id, secret, time }: IgenerateAccessToken) => {
     const payload = {
         id,
     };
+    console.log(id)
     return jwt.sign(payload, secret, { expiresIn: time });
 }
 

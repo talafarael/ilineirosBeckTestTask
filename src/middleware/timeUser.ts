@@ -1,6 +1,6 @@
 import jwt, {JwtPayload} from "jsonwebtoken"
 import { Response} from "express"
-const User = require("../model/user")
+const PreRegister = require("../model/PreRegister")
 
 interface IVerifyToken {
 	token: string
@@ -9,6 +9,7 @@ interface IVerifyToken {
 }
 async function verifyToken({token, res, secret}: IVerifyToken) {
 	try {
+		console.log('aaa')
 		if (!token) {
 			return res
 				.status(403)
@@ -16,16 +17,17 @@ async function verifyToken({token, res, secret}: IVerifyToken) {
 		}
 		console.log(secret)
 		console.log(token)
+
 		const decodedData = (await jwt.verify(token, secret)) as JwtPayload
 		const id = decodedData.id
-		console.log(decodedData)
-		const user = await User.findById(id.trim())
-		if (!user) {
+	
+		const preRegister = await PreRegister.findById(id.trim())
+		if (!preRegister ) {
 			return res.status(400).json({
 				message: "The user with this name does not exist",
 			})
 		}
-		return {user, id}
+		return {preRegister , id}
 	} catch (error) {
 		return res.status(401).json({
 			message: "Invalid token",
