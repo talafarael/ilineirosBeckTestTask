@@ -1,9 +1,17 @@
-const jwt = require("jsonwebtoken")
-const {secret} = require("../config")
-const generateAccessToken = (id:string) => {
-	const playold = {
-		id,
-	}
-	return jwt.sign(playold, secret, {expiresIn: "24h"})
+const jwt = require("jsonwebtoken");
+
+interface IgenerateAccessToken {
+    id: string;
+    secret: string;
+    time: string;
 }
-exports.module=generateAccessToken
+
+const generateAccessToken = ({ id, secret, time }: IgenerateAccessToken) => {
+    const payload = {
+        id,
+    };
+    console.log(id)
+    return jwt.sign(payload, secret, { expiresIn: time });
+}
+
+module.exports = generateAccessToken;
