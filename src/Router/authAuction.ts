@@ -15,7 +15,7 @@ const projectId = "commanding-ring-409619" // Get this from Google Cloud
 const keyFilename = "mykey.json"
 const bcrypt = require("bcryptjs")
 const Emailsend = require("../email")
-const HistoryBid=require('../model/HistoryBid')
+const HistoryBid = require("../model/HistoryBid")
 const emailSender = new Emailsend()
 
 const generateAccessToken = require("../middleware/generateAccessToken")
@@ -32,24 +32,12 @@ const passwordSendDelete = new PasswordSendDelete()
 class authAuction {
 	async createAuction(req: any, res: Response) {
 		try {
-			// const file = req.file
-			// const result = await uploadFile(file)
 			if (!req.file) {
 				return res.status(400).send("No file uploaded.")
 			}
 
 			console.log(req.file)
 			await uploadFile(req.file)
-			// 			const blobStream = blob.createWriteStream();
-
-			// 			blobStream.on("finish", () => {
-			// 					res.status(200).send("Success");
-			// 					console.log("Success");
-			// 			});
-			// 			blobStream.end(req.file.buffer);
-
-			// 			const file = req.files[0]
-			// await unlinkFile(file.path)
 
 			const fileName = `https://faralaer.s3.eu-west-2.amazonaws.com/${req.file.originalname}`
 
@@ -80,9 +68,13 @@ class authAuction {
 				timeStart: currentDate,
 				listRates: [],
 				owner: user.name,
-    ownerId: id,
+				ownerId: id,
 			})
-
+   const historyBid=new HistoryBid({
+				ListUser: [],
+				idAUction:auction.id
+			})
+			historyBid.save()
 			user.ownAuction.push(auction._id)
 
 			user.save()
@@ -198,7 +190,7 @@ class authAuction {
 			auction.save()
 			res.status(200).json({
 				stateOwner: stateOwner,
-				UserBid:UserBid,
+				UserBid: UserBid,
 				auction: auction,
 				message: "Auction created successfully",
 			})
@@ -228,12 +220,10 @@ class authAuction {
 				if (
 					auction.listRates[auction.listRates.length - 1].userId == id
 				) {
-					return res
-						.status(400)
-						.json({
-							message:
-								"you have already placed a bet, wait until it is interrupted",
-						})
+					return res.status(400).json({
+						message:
+							"you have already placed a bet, wait until it is interrupted",
+					})
 				}
 			}
 			let UserBid = auction.listRates.find(
@@ -293,10 +283,7 @@ class authAuction {
 				}
 			}
 
-			console.log(allSum + "aaaaaaaaaa")
-			console.log(auction.rates * 1.05)
-
-			console.log(auction.rates)
+	
 
 			if (Number(sum) > Number(user.balance)) {
 				return res.status(400).json({
@@ -310,6 +297,7 @@ class authAuction {
 						"If the sum is less than the minimum bid and less than the current bid, please make a higher bid",
 				})
 			}
+			
 			if (sum - UserBid.sum > Number(user.balance)) {
 				return res.status(400).json({
 					message: "you dont have money ",
