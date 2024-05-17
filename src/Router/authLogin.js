@@ -5,7 +5,7 @@ const User = require("../model/user")
 const Preregister = require("../model/PreRegister")
 const tempData = require("../cache")
 const {Request, Response, NextFunction} = require("express")
-const {secret} = require("../config")
+const {secret,secretTime} = require("../config")
 const timeUser = require("../middleware/timeUser")
 const jwt = require("jsonwebtoken")
 // const forgotdata = require('../email');
@@ -13,6 +13,7 @@ const Emailsend = require("../email")
 const {json} = require("express")
 const verifyToken = require("../middleware/verify")
 const emailSender = new Emailsend()
+
 const {Storage} = require("@google-cloud/storage")
 const projectId = "commanding-ring-409619" // Get this from Google Cloud
 const keyFilename = "mykey.json"
@@ -85,7 +86,7 @@ class authController {
 			preregister.save()
 			const token = generateToken({
 				id: preregister._id,
-				secret:process.env.REGISTERSECRET,
+				secret:secretTime,
 				time: "5min",
 			})
 
@@ -143,22 +144,18 @@ class authController {
 			res.status(400).json({message: "Registration error"})
 		}
 	}
-	async SendEmail(req, res) {
+	async SendEmail(req, res,next ) {
 		try {
-			const {token} = req.query
-			console.log(token)
-			if (!token) {
-				return res
-					.status(400)
-					.json({message: "Registration data not found"})
-			}
+			const {preRegister,id} = req
+			
+			// if (!token) {
+			// 	return res
+			// 		.status(400)
+			// 		.json({message: "Registration data not found"})
+			// }
 
-			const {preRegister, id} = await timeUser({
-				token: token,
-				res: res,
-				secret:process.env.REGISTERSECRET,
-			})
-			console.log(preRegister)
+			
+	
 			if (preRegister.status) {
 				await emailSender.sendmessage({
 					emailUser: preRegister.email,
@@ -210,16 +207,12 @@ class authController {
 	async registerCreate(req, res) {
 		try {
 			
-			const {code, token} = req.body
+			const {code, } = req.body
 		
-			
+			const {preRegister}=req
 
-			const {preRegister, id} = await timeUser({
-				token: token,
-				res: res,
-				secret:process.env.REGISTERSECRET,
-			})
-			if (preRegister.code != code) {
+		
+			if (preRegister.code == code) {
 				const user = new User({
 					avatar: "",
 					name: preRegister.name,

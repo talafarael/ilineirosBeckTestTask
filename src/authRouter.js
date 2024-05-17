@@ -7,6 +7,7 @@ const { Storage } = require("@google-cloud/storage");
 const Multer = require("multer");
 const verifyToken = require("./middleware/verify")
 const Auction = require("./model/Auction")
+const verifyTimerToken=require('./middleware/timeUser')
 // const projectId = "commanding-ring-409619" // Get this from Google Cloud
 // const keyFilename = "mykey.json" 
 // const multer = require('multer')
@@ -26,8 +27,8 @@ router.post('/getuser',middlewareUser,controllerLogin.getUser)
 router.post('/login', controllerLogin.login)
 router.post('/registration',controllerLogin.registration)
 router.post('/resendemail',controllerLogin.resendemail)
-router.post('/registercreate',controllerLogin.registerCreate)
-router.get('/sendemail',controllerLogin.SendEmail)
+router.post('/registercreate',verifyTimerToken,controllerLogin.registerCreate)
+router.get('/sendemail',verifyTimerToken,controllerLogin.SendEmail)
 router.post('/editprofileimage',type,controllerLogin.editprofileimage)
 router.post('/validatetoken',controllerLogin.validateToken)
 router.post('/recoverypassword',controllerLogin.changeSendTokenPassword)

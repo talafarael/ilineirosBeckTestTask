@@ -1,9 +1,11 @@
+const dotenv = require('dotenv');
+dotenv.config();
 const express = require("express")
 const mongoose = require("mongoose")
 const path = require("path")
 const app = express()
 const cors = require("cors")
-const PORT = 9000
+const PORT = 8000
 const authRouter = require("./authRouter")
 app.use(express.json())
 const multer = require("multer")
