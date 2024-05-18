@@ -72,7 +72,7 @@ class authAuction {
 			})
    const historyBid=new HistoryBid({
 				ListUser: [],
-				idAUction:auction.id
+				idAuction:auction.id
 			})
 			historyBid.save()
 			user.ownAuction.push(auction._id)
@@ -324,8 +324,21 @@ class authAuction {
 					`,
 				})
 			}
-
+  
 			auction.save()
+			console.log(idAuction)
+			const historyBid =await HistoryBid.findOne({
+				idAuction:idAuction,
+				})
+			const historyUser={
+				id:id,
+				user:user.name,
+				sum:sum,
+				time:new Date()
+			}
+			console.log(historyBid)
+			historyBid.ListUser.push(historyUser)
+			historyBid.save()
 			if (sum != 0) {
 				console.log("aaaa")
 				let indexBidUser = user.bidAuction.findIndex(
