@@ -269,7 +269,8 @@ class authController {
 			const {id} = req.body
 			const {user}=req
 			const userPerson = await User.findOne({_id: id})
-			const info = {
+		let info = {
+				email:userPerson.email,
 				name: userPerson.name,
 				avatar: userPerson.avatar,
 				ownAuction: userPerson.ownAuction,
@@ -277,6 +278,15 @@ class authController {
 			let status=false
 			if(user.id==userPerson._id){
 				status=true
+		 info = {
+					balance: userPerson.balance,
+				bidAuction: userPerson.bidAuction,
+				ownAuction: userPerson.ownAuction,
+					email:userPerson.email,
+					name: userPerson.name,
+					avatar: userPerson.avatar,
+					ownAuction: userPerson.ownAuction,
+				}
 			}
 			return res.status(200).json({
 				status:status,
