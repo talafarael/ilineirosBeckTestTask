@@ -5,7 +5,7 @@ const User = require("../model/user")
 const Preregister = require("../model/PreRegister")
 const tempData = require("../cache")
 const {Request, Response, NextFunction} = require("express")
-const {secret,secretTime} = require("../config")
+const {secret, secretTime} = require("../config")
 const timeUser = require("../middleware/timeUser")
 const jwt = require("jsonwebtoken")
 // const forgotdata = require('../email');
@@ -86,7 +86,7 @@ class authController {
 			preregister.save()
 			const token = generateToken({
 				id: preregister._id,
-				secret:secretTime,
+				secret: secretTime,
 				time: "5min",
 			})
 
@@ -137,25 +137,21 @@ class authController {
 				emailUser: email,
 				num: chaecknum.toString(),
 			})
-
-		
 		} catch (e) {
 			console.log(e)
 			res.status(400).json({message: "Registration error"})
 		}
 	}
-	async SendEmail(req, res,next ) {
+	async SendEmail(req, res, next) {
 		try {
-			const {preRegister,id} = req
-			
+			const {preRegister, id} = req
+
 			// if (!token) {
 			// 	return res
 			// 		.status(400)
 			// 		.json({message: "Registration data not found"})
 			// }
 
-			
-	
 			if (preRegister.status) {
 				await emailSender.sendmessage({
 					emailUser: preRegister.email,
@@ -206,12 +202,10 @@ class authController {
 	// }
 	async registerCreate(req, res) {
 		try {
-			
-			const {code, } = req.body
-		
-			const {preRegister}=req
+			const {code} = req.body
 
-		
+			const {preRegister} = req
+
 			if (preRegister.code == code) {
 				const user = new User({
 					avatar: "",
@@ -227,7 +221,7 @@ class authController {
 					message: "regist successfull",
 				})
 			}
-		return res.status(400).json({message: "Invalid code"})
+			return res.status(400).json({message: "Invalid code"})
 		} catch (error) {
 			console.error("Error during registration:", error)
 			return res.status(500).json({message: "Registration error"})
@@ -267,29 +261,29 @@ class authController {
 	async getPersonalAccount(req, res) {
 		try {
 			const {id} = req.body
-			const {user}=req
+			const {user} = req
 			const userPerson = await User.findOne({_id: id})
-		let info = {
-				email:userPerson.email,
+			let info = {
+				email: userPerson.email,
 				name: userPerson.name,
 				avatar: userPerson.avatar,
 				ownAuction: userPerson.ownAuction,
 			}
-			let status=false
-			if(user.id==userPerson._id){
-				status=true
-		 info = {
+			let status = false
+			if (user.id == userPerson._id) {
+				status = true
+				info = {
 					balance: userPerson.balance,
-				bidAuction: userPerson.bidAuction,
-				ownAuction: userPerson.ownAuction,
-					email:userPerson.email,
+					bidAuction: userPerson.bidAuction,
+					ownAuction: userPerson.ownAuction,
+					email: userPerson.email,
 					name: userPerson.name,
 					avatar: userPerson.avatar,
 					ownAuction: userPerson.ownAuction,
 				}
 			}
 			return res.status(200).json({
-				status:status,
+				status: status,
 				info: info,
 			})
 		} catch (e) {
@@ -348,7 +342,6 @@ class authController {
 				balance: user.balance,
 				bidAuction: user.bidAuction,
 				ownAuction: user.ownAuction,
-
 				avatar: user.avatar,
 			}
 
