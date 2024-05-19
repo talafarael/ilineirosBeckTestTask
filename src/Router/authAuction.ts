@@ -358,7 +358,13 @@ class authAuction {
 			res.status(400).json({message: "Registration error"})
 		}
 	}
-
+async getHistoryAuction(req: Request, res: Response){
+	try {
+	} catch (e) {
+		console.log(e)
+		res.status(400).json({message: "Registration error"})
+	}
+}
 	async getOwnAuctions(req: Request, res: Response) {
 		try {
 			const {token} = req.body

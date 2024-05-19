@@ -264,16 +264,22 @@ class authController {
 			res.status(400).json({message: "Registration error"})
 		}
 	}
-	async getSeller(req, res) {
+	async getPersonalAccount(req, res) {
 		try {
-			const {sellerID} = req.body
-			const user = await User.findOne({_id: sellerID})
+			const {id} = req.body
+			const {user}=req
+			const userPerson = await User.findOne({_id: id})
 			const info = {
-				name: user.name,
-				avatar: user.avatar,
-				ownAuction: user.ownAuction,
+				name: userPerson.name,
+				avatar: userPerson.avatar,
+				ownAuction: userPerson.ownAuction,
+			}
+			let status=false
+			if(user.id==userPerson._id){
+				status=true
 			}
 			return res.status(200).json({
+				status:status,
 				info: info,
 			})
 		} catch (e) {

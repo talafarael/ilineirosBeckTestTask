@@ -33,7 +33,7 @@ router.get('/sendemail',verifyTimerToken,controllerLogin.SendEmail)
 router.post('/editprofileimage',type,controllerLogin.editprofileimage)
 router.post('/validatetoken',controllerLogin.validateToken)
 router.post('/recoverypassword',controllerLogin.changeSendTokenPassword)
-router.post('/getseller',middlewareUser,controllerLogin.getSeller)
+router.post('/getpersonalaccount',middlewareUser,controllerLogin.getPersonalAccount)
 router.post('/checktoken',middlewareUser,controllerLogin.checkToken)
 router.post('/changepassword',controllerLogin.changePassword)
 
