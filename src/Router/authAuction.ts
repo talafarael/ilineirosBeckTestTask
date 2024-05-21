@@ -370,8 +370,8 @@ async getHistoryAuction(req: Request, res: Response){
 }
 	async getOwnAuctions(req: Request, res: Response) {
 		try {
-			const {token} = req.body
-			const {user, id} = await verifyToken(token, res)
+			const {id} = req.body
+			const user=await User.findOne({_id:id})
 			console.log(user)
 			const ownAuctionIds = user.ownAuction
 			console.log(ownAuctionIds)
