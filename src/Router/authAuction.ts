@@ -181,6 +181,8 @@ class authAuction {
 			if (auction.owner == user.name) {
 				stateOwner = true
 			}
+			const userOwn=await User.findOne({_id: auction.ownerId})
+			console.log(userOwn)
 			let UserBid = auction.listRates.find(
 				(element: IUserBid) => element.userId == id
 			)
@@ -189,6 +191,7 @@ class authAuction {
 			auction.active = active
 			auction.save()
 			res.status(200).json({
+				avatar:userOwn.avatar,
 				stateOwner: stateOwner,
 				UserBid: UserBid,
 				auction: auction,
