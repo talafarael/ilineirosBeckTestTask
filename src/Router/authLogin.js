@@ -337,6 +337,7 @@ class authController {
 			const {token} = req.body
 			const {user, id} = await verifyToken(token, res)
 			const userInfo = {
+				id:user._id,
 				name: user.name,
 				email: user.email,
 				balance: user.balance,
