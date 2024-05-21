@@ -70,9 +70,9 @@ class authAuction {
 				owner: user.name,
 				ownerId: id,
 			})
-   const historyBid=new HistoryBid({
+			const historyBid = new HistoryBid({
 				ListUser: [],
-				idAuction:auction.id
+				idAuction: auction.id,
 			})
 			historyBid.save()
 			user.ownAuction.push(auction._id)
@@ -181,7 +181,7 @@ class authAuction {
 			if (auction.owner == user.name) {
 				stateOwner = true
 			}
-			const userOwn=await User.findOne({_id: auction.ownerId})
+			const userOwn = await User.findOne({_id: auction.ownerId})
 			console.log(userOwn)
 			let UserBid = auction.listRates.find(
 				(element: IUserBid) => element.userId == id
@@ -191,7 +191,7 @@ class authAuction {
 			auction.active = active
 			auction.save()
 			res.status(200).json({
-				avatar:userOwn.avatar,
+				avatar: userOwn.avatar,
 				stateOwner: stateOwner,
 				UserBid: UserBid,
 				auction: auction,
@@ -286,8 +286,6 @@ class authAuction {
 				}
 			}
 
-	
-
 			if (Number(sum) > Number(user.balance)) {
 				return res.status(400).json({
 					message:
@@ -300,7 +298,7 @@ class authAuction {
 						"If the sum is less than the minimum bid and less than the current bid, please make a higher bid",
 				})
 			}
-			
+
 			if (sum - UserBid.sum > Number(user.balance)) {
 				return res.status(400).json({
 					message: "you dont have money ",
@@ -327,17 +325,17 @@ class authAuction {
 					`,
 				})
 			}
-  
+
 			auction.save()
 			console.log(idAuction)
-			const historyBid =await HistoryBid.findOne({
-				idAuction:idAuction,
-				})
-			const historyUser={
-				id:id,
-				user:user.name,
-				sum:sum,
-				time:new Date()
+			const historyBid = await HistoryBid.findOne({
+				idAuction: idAuction,
+			})
+			const historyUser = {
+				id: id,
+				user: user.name,
+				sum: sum,
+				time: new Date(),
 			}
 			console.log(historyBid)
 			historyBid.ListUser.push(historyUser)
@@ -361,17 +359,21 @@ class authAuction {
 			res.status(400).json({message: "Registration error"})
 		}
 	}
-async getHistoryAuction(req: Request, res: Response){
-	try {
-	} catch (e) {
-		console.log(e)
-		res.status(400).json({message: "Registration error"})
+	async getHistoryAuction(req, res: Response) {
+		try {
+			const {id} = req.query
+			console.log(id)
+			const historyBid =await HistoryBid.findOne({idAuction: id})
+			res.status(200).json(historyBid)
+		} catch (e) {
+			console.log(e)
+			res.status(400).json({message: "Registration error"})
+		}
 	}
-}
 	async getOwnAuctions(req: Request, res: Response) {
 		try {
 			const {id} = req.body
-			const user=await User.findOne({_id:id})
+			const user = await User.findOne({_id: id})
 			console.log(user)
 			const ownAuctionIds = user.ownAuction
 			console.log(ownAuctionIds)
