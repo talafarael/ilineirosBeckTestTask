@@ -235,9 +235,9 @@ class authController {
 
 		const regex = new RegExp(value, "i")
 
-		const musics = await User.find({name: {$regex: regex}}).limit(5)
+		const auctions = await User.find({name: {$regex: regex}}).limit(5)
 		res.status(200).json({
-			musics,
+			auctions ,
 		})
 		try {
 		} catch (e) {
@@ -253,9 +253,9 @@ class authController {
 
 		const regex = new RegExp(value, "i")
 
-		const musics = await User.find({name: {$regex: regex}})
+		const auctions  = await User.find({name: {$regex: regex}})
 		res.status(200).json({
-			musics,
+			auctions ,
 		})
 		try {
 		} catch (e) {
