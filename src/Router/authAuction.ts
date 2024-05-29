@@ -363,7 +363,7 @@ class authAuction {
 		try {
 			const {id} = req.query
 			console.log(id)
-			const historyBid =await HistoryBid.findOne({idAuction: id})
+			const historyBid = await HistoryBid.findOne({idAuction: id})
 			res.status(200).json(historyBid)
 		} catch (e) {
 			console.log(e)
@@ -422,7 +422,7 @@ class authAuction {
 			res.status(400).json({message: "Registration error"})
 		}
 	}
-
+	
 	async changeInfoForChange(req: Request, res: Response) {
 		try {
 			const {token, _id, title, minRates, timeEnd, desct} = req.body

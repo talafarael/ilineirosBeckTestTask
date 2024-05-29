@@ -38,6 +38,8 @@ router.post('/checktoken',middlewareUser,controllerLogin.checkToken)
 router.post('/changepassword',controllerLogin.changePassword)
 
 //aukction
+router.get('/search',controllerLogin.search)
+router.get('/searchget',controllerLogin.searchGet)
 router.get('/getauction',auctionController.getAuction)
 router.post('/getauctionone',middlewareUser,auctionController.getAuctionOne)
 router.post('/makebidauctionone',middlewareUser,auctionController.makeBidAuctionOne)

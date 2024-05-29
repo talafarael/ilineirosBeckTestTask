@@ -227,6 +227,42 @@ class authController {
 			return res.status(500).json({message: "Registration error"})
 		}
 	}
+	async search(req, res) {
+		const {value} = req.query
+		if (!value) {
+			return res.status(400).send('Query parameter "value" is required')
+		}
+
+		const regex = new RegExp(value, "i")
+
+		const musics = await User.find({name: {$regex: regex}}).limit(20)
+		res.status(200).json({
+			musics,
+		})
+		try {
+		} catch (e) {
+			console.log(e)
+			res.status(400).json({message: "Registration error"})
+		}
+	}
+	async searchGet(req, res) {
+		const {value} = req.query
+		if (!value) {
+			return res.status(400).send('Query parameter "value" is required')
+		}
+
+		const regex = new RegExp(value, "i")
+
+		const musics = await User.find({name: {$regex: regex}})
+		res.status(200).json({
+			musics,
+		})
+		try {
+		} catch (e) {
+			console.log(e)
+			res.status(400).json({message: "Registration error"})
+		}
+	}
 	async login(req, res) {
 		try {
 			const {email, password} = req.body
@@ -337,7 +373,7 @@ class authController {
 			const {token} = req.body
 			const {user, id} = await verifyToken(token, res)
 			const userInfo = {
-				id:user._id,
+				id: user._id,
 				name: user.name,
 				email: user.email,
 				balance: user.balance,
