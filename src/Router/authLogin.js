@@ -235,7 +235,7 @@ class authController {
 
 		const regex = new RegExp(value, "i")
 
-		const auctions = await  Auction.find({name: {$regex: regex}}).limit(5)
+		const auctions = await  Auction.find({title: {$regex: regex}}).limit(5)
 		res.status(200).json({
 			auctions ,
 		})
@@ -253,7 +253,7 @@ class authController {
 
 		const regex = new RegExp(value, "i")
 
-		const auctions  = await  Auction.find({name: {$regex: regex}})
+		const auctions  = await  Auction.find({title: {$regex: regex}})
 		res.status(200).json({
 			auctions ,
 		})
