@@ -13,7 +13,7 @@ const Emailsend = require("../email")
 const {json} = require("express")
 const verifyToken = require("../middleware/verify")
 const emailSender = new Emailsend()
-
+const Auction = require("../model/Auction")
 const {Storage} = require("@google-cloud/storage")
 const projectId = "commanding-ring-409619" // Get this from Google Cloud
 const keyFilename = "mykey.json"
@@ -235,7 +235,7 @@ class authController {
 
 		const regex = new RegExp(value, "i")
 
-		const auctions = await User.find({name: {$regex: regex}}).limit(5)
+		const auctions = await  Auction.find({name: {$regex: regex}}).limit(5)
 		res.status(200).json({
 			auctions ,
 		})
@@ -253,7 +253,7 @@ class authController {
 
 		const regex = new RegExp(value, "i")
 
-		const auctions  = await User.find({name: {$regex: regex}})
+		const auctions  = await  Auction.find({name: {$regex: regex}})
 		res.status(200).json({
 			auctions ,
 		})
